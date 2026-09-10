@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IKK Echoes Calculator</title>
+</head>
+
+<body>
+
+    <h1>IKK Echoes Calculator</h1>
+
+    <h2>แพ็กที่มี</h2>
+
+    <table border="1" cellpadding="8">
+        <tr>
+            <th>แพ็ก</th>
+            <th>Echoes</th>
+            <th>ราคา</th>
+        </tr>
+        <tr>
+            <td>A</td>
+            <td>66</td>
+            <td>30 บาท</td>
+        </tr>
+        <tr>
+            <td>B</td>
+            <td>203</td>
+            <td>90 บาท</td>
+        </tr>
+        <tr>
+            <td>C</td>
+            <td>335</td>
+            <td>145 บาท</td>
+        </tr>
+        <tr>
+            <td>D</td>
+            <td>759</td>
+            <td>285 บาท</td>
+        </tr>
+        <tr>
+            <td>D ×10+</td>
+            <td>759</td>
+            <td>283 บาท</td>
+        </tr>
+        <tr>
+            <td>D ×20+</td>
+            <td>759</td>
+            <td>280 บาท</td>
+        </tr>
+        <tr>
+            <td>D ×30+</td>
+            <td>759</td>
+            <td>278 บาท</td>
+        </tr>
+    </table>
+
+    <br>
+
+    <label>
+        ต้องการ Echoes:
+        <input type="number" id="target" min="1" placeholder="เช่น 5000">
+    </label>
+
+    <button onclick="calculate()">คำนวณ</button>
+
+    <div id="result"></div>
+
+
+<script>
+
+function get759Price(quantity) {
+    if (quantity >= 30) return 278;
+    if (quantity >= 20) return 280;
+    if (quantity >= 10) return 283;
+    return 285;
+}
+
+
+// คำนวณแพ็กเล็ก 66 / 203 / 335
+function calculateSmallPacks(target) {
+
+    const packs = [
+        { echoes: 66, price: 30, name: "66" },
+        { echoes: 203, price: 90, name: "203" },
+        { echoes: 335, price: 145, name: "335" }
+    ];
+
+    const max = target + 335;
+
+    const dp = new Array(max + 1).fill(Infinity);
+    const previous = new Array(max + 1).fill(null);
+
+    dp[0] = 0;
+
+    for (let i = 0; i <= max; i++) {
+
+        if (dp[i] === Infinity) continue;
+
+        for (const pack of packs) {
+
+            const next = i + pack.echoes;
+
+            if (next <= max && dp[i] + pack.price < dp[next]) {
+
+                dp[next] = dp[i] + pack.price;
+
+                previous[next] = {
+                    previous: i,
+                    pack: pack
+                };
+            }
+        }
+    }
+
+    // หา combination ที่ราคาถูกที่สุด
+    // โดยยอมให้ Echoes เกินยอดที่ต้องการได้
+    let bestAmount = target;
+
+    for (let amount = target + 1; amount <= max; amount++) {
+
+        if (dp[amount] < dp[bestAmount]) {
+            bestAmount = amount;
+        }
+    }
+
+    // แกะว่าใช้แพ็กอะไรบ้าง
+    const counts = {
+        "66": 0,
+        "203": 0,
+        "335": 0
+    };
+
+    let current = bestAmount;
+
+    while (current > 0 && previous[current]) {
+
+        const item = previous[current];
+
+        counts[item.pack.name]++;
+
+        current = item.previous;
+    }
+
+    return {
+        echoes: bestAmount,
+        price: dp[bestAmount],
+        counts: counts
+    };
+}
+
+
+function calculate() {
+
+    const target = Number(document.getElementById("target").value);
+
+    if (!target || target <= 0) {
+
+        document.getElementById("result").innerHTML =
+            "<p>กรุณาใส่จำนวน Echoes ที่ต้องการ</p>";
+
+        return;
+    }
+
+
+    let best = null;
+
+    // จำนวน 759 ที่เป็นไปได้
+    const max759 = Math.ceil(target / 759);
+
+
+    for (let qty759 = 0; qty759 <= max759; qty759++) {
+
+        const echoes759 = qty759 * 759;
+
+        const price759 = qty759 > 0
+            ? qty759 * get759Price(qty759)
+            : 0;
+
+        // Echoes ที่ยังขาด
+        const remaining = Math.max(0, target - echoes759);
+
+        const small = calculateSmallPacks(remaining);
+
+        const totalEchoes = echoes759 + small.echoes;
+
+        const totalPrice = price759 + small.price;
+
+
+        const result = {
+            qty759: qty759,
+            price759: price759,
+            small: small,
+            totalEchoes: totalEchoes,
+            totalPrice: totalPrice
+        };
+
+
+        if (
+            best === null ||
+            totalPrice < best.totalPrice
+        ) {
+            best = result;
+        }
+    }
+
+
+    // แสดงผล
+    let html = "";
+
+    html += "<h2>ผลการคำนวณ</h2>";
+
+    html += `
+        <p>
+            ต้องการ: <strong>${target.toLocaleString()} Echoes</strong>
+        </p>
+    `;
+
+
+    html += "<h3>🏆 ชุดที่ถูกที่สุด</h3>";
+
+    html += "<ul>";
+
+
+    if (best.qty759 > 0) {
+
+        html += `
+            <li>
+                759 Echoes × ${best.qty759}
+                = ${best.price759.toLocaleString()} บาท
+                (${get759Price(best.qty759)} บาท/แพ็ก)
+            </li>
+        `;
+    }
+
+
+    if (best.small.counts["335"] > 0) {
+
+        html += `
+            <li>
+                335 Echoes × ${best.small.counts["335"]}
+            </li>
+        `;
+    }
+
+
+    if (best.small.counts["203"] > 0) {
+
+        html += `
+            <li>
+                203 Echoes × ${best.small.counts["203"]}
+            </li>
+        `;
+    }
+
+
+    if (best.small.counts["66"] > 0) {
+
+        html += `
+            <li>
+                66 Echoes × ${best.small.counts["66"]}
+            </li>
+        `;
+    }
+
+
+    html += "</ul>";
+
+
+    html += `
+        <hr>
+
+        <p>
+            Echoes ที่ได้รับ:
+            <strong>${best.totalEchoes.toLocaleString()}</strong>
+        </p>
+
+        <p>
+            ราคา:
+            <strong>${best.totalPrice.toLocaleString()} บาท</strong>
+        </p>
+
+        <p>
+            Echoes เกิน:
+            <strong>${(best.totalEchoes - target).toLocaleString()}</strong>
+        </p>
+    `;
+
+
+    document.getElementById("result").innerHTML = html;
+}
+
+</script>
+
+</body>
+</html>
