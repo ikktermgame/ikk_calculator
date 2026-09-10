@@ -1138,15 +1138,18 @@ function calculate() {
             เลือกราคาที่ถูกที่สุด
         */
 
-        if (
-            best === null ||
-            totalPrice <
-            best.totalPrice
-        ) {
+if (
+    best === null ||
+    totalPrice < best.totalPrice ||
+    (
+        totalPrice === best.totalPrice &&
+        totalEchoes > best.totalEchoes
+    )
+) {
 
-            best = result;
+    best = result;
 
-        }
+}
 
 
     }
