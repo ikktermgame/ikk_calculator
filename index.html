@@ -840,25 +840,26 @@ function calculateSmallPacks(
                     pack.price;
 
 
-                if (
-                    newPrice <
-                    dp[next]
-                ) {
+if (
+    newPrice < dp[next] ||
+    (
+        newPrice === dp[next] &&
+        next > i
+    )
+) {
 
+    dp[next] =
+        newPrice;
 
-                    dp[next] =
-                        newPrice;
+    previous[next] = {
 
+        previous: i,
 
-                    previous[next] = {
+        pack: pack
 
-                        previous: i,
+    };
 
-                        pack: pack
-
-                    };
-
-                }
+}
 
             }
 
