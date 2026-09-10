@@ -86,12 +86,6 @@ h1 {
     transform: translateY(-2px);
 }
 
-.pack-name {
-    font-size: 13px;
-    color: #858ca1;
-    margin-bottom: 8px;
-}
-
 .pack-echoes {
     font-size: 24px;
     font-weight: 800;
@@ -249,10 +243,6 @@ button:hover {
     color: #aeb5ff;
 }
 
-.excess {
-    color: #aeb4c5;
-}
-
 /* ERROR */
 
 .error {
@@ -308,12 +298,16 @@ button:hover {
 
     <header class="header">
 
-        <div class="logo">IKK คุณอิคคิดมาแล้ว!</div>
+        <div class="logo">
+            IKK คูณคิดมาแล้ว!
+        </div>
 
-        <h1>Echoes Calculator</h1>
+        <h1>
+            Echoes Calculator
+        </h1>
 
         <div class="subtitle">
-            คำนวณ Echoes ตามสั่งคับเบ๊บ💗
+            คำนวณ Echoes ตามสั่งกับเฮีย❤️
         </div>
 
     </header>
@@ -324,33 +318,37 @@ button:hover {
     <section class="section">
 
         <div class="section-title">
-            📦แพ็กข้างต้น
+            📦 แพ็กข้างต้น
         </div>
 
         <div class="pack-grid">
 
             <div class="pack">
-                <div class="pack-name">PACK A</div>
                 <div class="pack-echoes">66</div>
-                <div class="pack-price"><strong>30</strong> บาท</div>
+                <div class="pack-price">
+                    <strong>30บาท</strong>
+                </div>
             </div>
 
             <div class="pack">
-                <div class="pack-name">PACK B</div>
                 <div class="pack-echoes">203</div>
-                <div class="pack-price"><strong>90</strong> บาท</div>
+                <div class="pack-price">
+                    <strong>90บาท</strong>
+                </div>
             </div>
 
             <div class="pack">
-                <div class="pack-name">PACK C</div>
                 <div class="pack-echoes">335</div>
-                <div class="pack-price"><strong>145</strong> บาท</div>
+                <div class="pack-price">
+                    <strong>145บาท</strong>
+                </div>
             </div>
 
             <div class="pack">
-                <div class="pack-name">PACK D</div>
                 <div class="pack-echoes">759</div>
-                <div class="pack-price"><strong>285</strong> บาท</div>
+                <div class="pack-price">
+                    <strong>285บาท</strong>
+                </div>
             </div>
 
         </div>
@@ -372,7 +370,7 @@ button:hover {
                 type="number"
                 id="target"
                 min="1"
-                placeholder="เช่น 2788"
+                placeholder="เช่น 2888"
                 onkeydown="if(event.key === 'Enter') calculate()"
             >
 
@@ -391,7 +389,7 @@ button:hover {
 
 
     <div class="footer">
-        IKK Calculator · คิดให้แล้ว เอาดงดี ระ เร็วววววว !
+        IKK Calculator · คิดให้แล้ว เอาตังค์ที่รวยเร็วๆๆๆ!
     </div>
 
 </div>
@@ -411,11 +409,6 @@ function get759Price(quantity) {
 
 }
 
-
-/*
-    หา combination ของแพ็ก 66 / 203 / 335
-    ที่ราคาถูกที่สุด
-*/
 
 function calculateSmallPacks(target) {
 
@@ -458,10 +451,10 @@ function calculateSmallPacks(target) {
 
             const next = i + pack.echoes;
 
-
             if (next <= max) {
 
-                const newPrice = dp[i] + pack.price;
+                const newPrice =
+                    dp[i] + pack.price;
 
 
                 if (newPrice < dp[next]) {
@@ -484,7 +477,12 @@ function calculateSmallPacks(target) {
 
     let bestAmount = target;
 
-    for (let amount = target; amount <= max; amount++) {
+
+    for (
+        let amount = target;
+        amount <= max;
+        amount++
+    ) {
 
         if (dp[amount] < dp[bestAmount]) {
 
@@ -505,7 +503,10 @@ function calculateSmallPacks(target) {
     let current = bestAmount;
 
 
-    while (current > 0 && previous[current]) {
+    while (
+        current > 0 &&
+        previous[current]
+    ) {
 
         const item = previous[current];
 
@@ -525,14 +526,12 @@ function calculateSmallPacks(target) {
 }
 
 
-/*
-    MAIN CALCULATOR
-*/
-
 function calculate() {
 
     const target =
-        Number(document.getElementById("target").value);
+        Number(
+            document.getElementById("target").value
+        );
 
 
     if (!target || target <= 0) {
@@ -555,8 +554,11 @@ function calculate() {
         Math.ceil(target / 759);
 
 
-    for (let qty759 = 0; qty759 <= max759; qty759++) {
-
+    for (
+        let qty759 = 0;
+        qty759 <= max759;
+        qty759++
+    ) {
 
         const echoes759 =
             qty759 * 759;
@@ -569,11 +571,16 @@ function calculate() {
 
 
         const remaining =
-            Math.max(0, target - echoes759);
+            Math.max(
+                0,
+                target - echoes759
+            );
 
 
         const small =
-            calculateSmallPacks(remaining);
+            calculateSmallPacks(
+                remaining
+            );
 
 
         const totalEchoes =
@@ -622,8 +629,9 @@ function calculate() {
             <div class="best">
 
                 <div class="best-label">
-                    Cheapest combination
+                    CHEAPEST COMBINATION
                 </div>
+
     `;
 
 
@@ -638,8 +646,8 @@ function calculate() {
                 </div>
 
                 <div class="pack-line-price">
-                    ${best.price759.toLocaleString()} บาท
-                    · ${get759Price(best.qty759)} บาท/แพ็ก
+                    ${best.price759.toLocaleString()}บาท
+                    · ${get759Price(best.qty759)}บาท/แพ็ก
                 </div>
 
             </div>
@@ -649,7 +657,9 @@ function calculate() {
     }
 
 
-    if (best.small.counts["335"] > 0) {
+    if (
+        best.small.counts["335"] > 0
+    ) {
 
         html += `
 
@@ -662,7 +672,7 @@ function calculate() {
                 <div class="pack-line-price">
                     ${(
                         best.small.counts["335"] * 145
-                    ).toLocaleString()} บาท
+                    ).toLocaleString()}บาท
                 </div>
 
             </div>
@@ -672,7 +682,9 @@ function calculate() {
     }
 
 
-    if (best.small.counts["203"] > 0) {
+    if (
+        best.small.counts["203"] > 0
+    ) {
 
         html += `
 
@@ -685,7 +697,7 @@ function calculate() {
                 <div class="pack-line-price">
                     ${(
                         best.small.counts["203"] * 90
-                    ).toLocaleString()} บาท
+                    ).toLocaleString()}บาท
                 </div>
 
             </div>
@@ -695,7 +707,9 @@ function calculate() {
     }
 
 
-    if (best.small.counts["66"] > 0) {
+    if (
+        best.small.counts["66"] > 0
+    ) {
 
         html += `
 
@@ -708,7 +722,7 @@ function calculate() {
                 <div class="pack-line-price">
                     ${(
                         best.small.counts["66"] * 30
-                    ).toLocaleString()} บาท
+                    ).toLocaleString()}บาท
                 </div>
 
             </div>
@@ -758,24 +772,10 @@ function calculate() {
                     </div>
 
                     <div class="stat-value price">
-                        ${best.totalPrice.toLocaleString()} ฿
+                        ${best.totalPrice.toLocaleString()}฿
                     </div>
 
                 </div>
-
-            </div>
-
-
-            <div style="
-                margin-top:15px;
-                color:#858ca1;
-                font-size:13px;
-            ">
-
-                Echoes เกิน
-                <strong style="color:#fff;">
-                    ${(best.totalEchoes - target).toLocaleString()}
-                </strong>
 
             </div>
 
@@ -784,7 +784,8 @@ function calculate() {
     `;
 
 
-    document.getElementById("result").innerHTML = html;
+    document.getElementById("result").innerHTML =
+        html;
 
 }
 
