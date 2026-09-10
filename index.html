@@ -756,110 +756,96 @@ function get759Price(quantity) {
    SMALL PACK OPTIMIZER
 ========================= */
 
-function calculateSmallPacks(
-    target,
-    mode
-) {
+function calculateSmallPacks(target, mode) {
 
     const smallPackages = [
-
         packages[0],
         packages[1],
         packages[2]
-
     ];
-
 
     const maxValue =
         target +
         Math.max(
-            ...smallPackages.map(
-                p => mode === "echoes"
+            ...smallPackages.map(p =>
+                mode === "echoes"
                     ? p.echoes
                     : p.points
             )
         );
 
+    const dp = new Array(maxValue + 1).fill(null);
 
-    const dp =
-        new Array(
-            maxValue + 1
-        ).fill(Infinity);
-
-
-    const previous =
-        new Array(
-            maxValue + 1
-        ).fill(null);
-
-
-    dp[0] = 0;
+    dp[0] = {
+        price: 0,
+        value: 0,
+        counts: {
+            "66": 0,
+            "203": 0,
+            "335": 0
+        }
+    };
 
 
+    for (let i = 0; i <= maxValue; i++) {
 
-    for (
-        let i = 0;
-        i <= maxValue;
-        i++
-    ) {
-
-
-        if (
-            dp[i] === Infinity
-        ) {
-
+        if (dp[i] === null) {
             continue;
-
         }
 
 
-
-        for (
-            const pack
-            of smallPackages
-        ) {
-
+        for (const pack of smallPackages) {
 
             const value =
                 mode === "echoes"
                     ? pack.echoes
                     : pack.points;
 
+            const next = i + value;
 
-            const next =
-                i + value;
+            if (next > maxValue) {
+                continue;
+            }
 
+
+            const newPrice =
+                dp[i].price + pack.price;
+
+
+            const newValue =
+                dp[i].value + value;
+
+
+            const newCounts = {
+                ...dp[i].counts,
+                [pack.echoes]:
+                    dp[i].counts[pack.echoes] + 1
+            };
+
+
+            const candidate = {
+                price: newPrice,
+                value: newValue,
+                counts: newCounts
+            };
+
+
+            /*
+                เลือกชุดที่:
+                1. ราคาถูกกว่า
+                2. ถ้าราคาเท่ากัน เอา Value เยอะกว่า
+            */
 
             if (
-                next <= maxValue
+                dp[next] === null ||
+                candidate.price < dp[next].price ||
+                (
+                    candidate.price === dp[next].price &&
+                    candidate.value > dp[next].value
+                )
             ) {
 
-
-                const newPrice =
-                    dp[i] +
-                    pack.price;
-
-
-if (
-    newPrice < dp[next] ||
-    (
-        newPrice === dp[next] &&
-        next > i
-    )
-) {
-
-    dp[next] =
-        newPrice;
-
-    previous[next] = {
-
-        previous: i,
-
-        pack: pack
-
-    };
-
-}
+                dp[next] = candidate;
 
             }
 
@@ -868,9 +854,14 @@ if (
     }
 
 
+    /*
+        จากจำนวนที่ต้องการ
+        ให้เลือกจำนวนที่:
+        1. ราคาถูกที่สุด
+        2. ถ้าราคาเท่ากัน ได้ Value มากที่สุด
+    */
 
-    let bestAmount =
-        target;
+    let bestAmount = null;
 
 
     for (
@@ -879,77 +870,56 @@ if (
         amount++
     ) {
 
+        if (dp[amount] === null) {
+            continue;
+        }
+
 
         if (
-            dp[amount] <
-            dp[bestAmount]
+            bestAmount === null ||
+            dp[amount].price <
+                dp[bestAmount].price ||
+            (
+                dp[amount].price ===
+                    dp[bestAmount].price &&
+                dp[amount].value >
+                    dp[bestAmount].value
+            )
         ) {
 
-            bestAmount =
-                amount;
+            bestAmount = amount;
 
         }
 
     }
 
 
+    if (bestAmount === null) {
 
-    const counts = {
-
-        "66": 0,
-
-        "203": 0,
-
-        "335": 0
-
-    };
-
-
-
-    let current =
-        bestAmount;
-
-
-
-    while (
-        current > 0 &&
-        previous[current]
-    ) {
-
-
-        const item =
-            previous[current];
-
-
-        counts[
-            item.pack.echoes
-        ]++;
-
-
-        current =
-            item.previous;
+        return {
+            value: 0,
+            price: Infinity,
+            counts: {
+                "66": 0,
+                "203": 0,
+                "335": 0
+            }
+        };
 
     }
 
 
-
     return {
 
-        value: bestAmount,
+        value: dp[bestAmount].value,
 
-        price: dp[bestAmount],
+        price: dp[bestAmount].price,
 
-        counts: counts
+        counts: dp[bestAmount].counts
 
     };
 
 }
-
-
-
-/* =========================
-   MAIN CALCULATOR
-========================= */
 
 function calculate() {
 
