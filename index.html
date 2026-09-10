@@ -1,12 +1,19 @@
 <!DOCTYPE html>
 <html lang="th">
+
 <head>
-<link rel="icon" type="image/png" href="ikk.png">
-    
+
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<link rel="icon" type="image/png" href="ikk.png">
+
+<meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+>
 
 <title>IKK Echoes Calculator</title>
+
 
 <style>
 
@@ -14,289 +21,550 @@
     box-sizing: border-box;
 }
 
+
 body {
+
     margin: 0;
+
     min-height: 100vh;
-    font-family: Arial, Helvetica, sans-serif;
+
+    font-family:
+        Arial,
+        Helvetica,
+        sans-serif;
+
     background:
-        radial-gradient(circle at top, #252b3d 0%, #11131a 45%, #0b0c10 100%);
+        radial-gradient(
+            circle at top,
+            #252b3d 0%,
+            #11131a 45%,
+            #0b0c10 100%
+        );
+
     color: #f5f7ff;
 }
 
+
 .container {
-    width: min(900px, calc(100% - 32px));
+
+    width:
+        min(
+            900px,
+            calc(100% - 32px)
+        );
+
     margin: 0 auto;
-    padding: 45px 0 60px;
+
+    padding:
+        45px 0 60px;
 }
 
-/* HEADER */
+
+/* =========================
+   HEADER
+========================= */
 
 .header {
+
     margin-bottom: 32px;
 }
 
+
 .logo {
+
     font-size: 14px;
+
     font-weight: 700;
+
     letter-spacing: 2px;
+
     color: #9da7ff;
+
     margin-bottom: 10px;
 }
 
+
 h1 {
+
     margin: 0;
-    font-size: clamp(30px, 5vw, 48px);
+
+    font-size:
+        clamp(
+            30px,
+            5vw,
+            48px
+        );
+
     line-height: 1.1;
 }
 
+
 .subtitle {
+
     margin-top: 10px;
+
     color: #9298aa;
+
     font-size: 15px;
 }
 
-/* SECTION */
 
-.section {
-    margin-bottom: 24px;
-}
-
-.section-title {
-    font-size: 18px;
-    font-weight: 700;
-    margin-bottom: 14px;
-}
-
-/* PACKS */
-
-.pack-grid {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 12px;
-}
-
-.pack {
-    background: rgba(25, 28, 39, 0.9);
-    border: 1px solid #303548;
-    border-radius: 14px;
-    padding: 18px;
-    transition: 0.2s;
-}
-
-.pack:hover {
-    border-color: #6571d9;
-    transform: translateY(-2px);
-}
-
-.pack-echoes {
-    font-size: 24px;
-    font-weight: 800;
-}
-
-.pack-price {
-    margin-top: 6px;
-    color: #aeb5c8;
-    font-size: 14px;
-}
-
-.pack-price strong {
-    color: #ffffff;
-}
-
-/* CALCULATOR */
+/* =========================
+   CALCULATOR
+========================= */
 
 .calculator {
-    background: rgba(20, 23, 32, 0.95);
-    border: 1px solid #303548;
+
+    background:
+        rgba(
+            20,
+            23,
+            32,
+            0.95
+        );
+
+    border:
+        1px solid #303548;
+
     border-radius: 18px;
+
     padding: 24px;
 }
 
-.input-label {
+
+/* MODE */
+
+.mode-label {
+
     display: block;
+
     color: #aeb4c5;
+
     font-size: 14px;
+
+    margin-bottom: 10px;
+}
+
+
+.mode-buttons {
+
+    display: grid;
+
+    grid-template-columns:
+        repeat(2, 1fr);
+
+    gap: 10px;
+
+    margin-bottom: 22px;
+}
+
+
+.mode-button {
+
+    padding: 13px 16px;
+
+    border-radius: 11px;
+
+    border:
+        1px solid #3a4054;
+
+    background: #12151e;
+
+    color: #aeb5c8;
+
+    font-size: 14px;
+
+    font-weight: 700;
+
+    cursor: pointer;
+
+    transition: 0.2s;
+}
+
+
+.mode-button:hover {
+
+    border-color: #6975ff;
+
+    color: white;
+}
+
+
+.mode-button.active {
+
+    background:
+        rgba(
+            105,
+            117,
+            255,
+            0.12
+        );
+
+    border-color: #6975ff;
+
+    color: #9da7ff;
+}
+
+
+/* INPUT */
+
+.input-label {
+
+    display: block;
+
+    color: #aeb4c5;
+
+    font-size: 14px;
+
     margin-bottom: 9px;
 }
 
+
 .input-row {
+
     display: flex;
+
     gap: 10px;
 }
 
+
 input {
+
     flex: 1;
+
     min-width: 0;
+
     background: #0d0f15;
-    border: 1px solid #3a4054;
+
+    border:
+        1px solid #3a4054;
+
     border-radius: 11px;
+
     color: white;
-    padding: 15px 16px;
+
+    padding:
+        15px 16px;
+
     font-size: 18px;
+
     outline: none;
 }
 
+
 input:focus {
+
     border-color: #7580ff;
-    box-shadow: 0 0 0 3px rgba(117, 128, 255, 0.12);
+
+    box-shadow:
+        0 0 0 3px
+        rgba(
+            117,
+            128,
+            255,
+            0.12
+        );
 }
 
-button {
+
+button.calculate-button {
+
     border: 0;
+
     border-radius: 11px;
-    padding: 0 25px;
+
+    padding:
+        0 25px;
+
     background: #6975ff;
+
     color: white;
+
     font-size: 16px;
+
     font-weight: 700;
+
     cursor: pointer;
+
     transition: 0.2s;
 }
 
-button:hover {
+
+button.calculate-button:hover {
+
     background: #7b86ff;
-    transform: translateY(-1px);
+
+    transform:
+        translateY(-1px);
 }
 
-/* RESULT */
+
+/* =========================
+   RESULT
+========================= */
 
 #result {
+
     margin-top: 24px;
 }
 
+
 .result-card {
-    background: rgba(20, 23, 32, 0.95);
-    border: 1px solid #303548;
+
+    background:
+        rgba(
+            20,
+            23,
+            32,
+            0.95
+        );
+
+    border:
+        1px solid #303548;
+
     border-radius: 18px;
+
     padding: 24px;
 }
 
+
 .result-title {
+
     display: flex;
+
     align-items: center;
+
     gap: 9px;
+
     font-size: 18px;
+
     font-weight: 700;
+
     margin-bottom: 20px;
 }
 
+
 .best {
-    border: 1px solid #6975ff;
-    background: rgba(105, 117, 255, 0.07);
+
+    border:
+        1px solid #6975ff;
+
+    background:
+        rgba(
+            105,
+            117,
+            255,
+            0.07
+        );
+
     border-radius: 14px;
+
     padding: 18px;
 }
 
+
 .best-label {
+
     font-size: 12px;
+
     color: #8e98ff;
+
     font-weight: 700;
+
     letter-spacing: 1px;
+
     text-transform: uppercase;
+
     margin-bottom: 14px;
 }
 
+
 .pack-line {
+
     display: flex;
+
     justify-content: space-between;
+
     align-items: center;
+
     padding: 11px 0;
-    border-bottom: 1px solid #2c3040;
+
+    border-bottom:
+        1px solid #2c3040;
 }
 
+
 .pack-line:last-child {
+
     border-bottom: none;
 }
 
+
 .pack-line-name {
+
     font-weight: 600;
 }
 
+
 .pack-line-price {
+
     color: #aeb5c8;
+
     font-size: 14px;
 }
 
+
+/* SUMMARY */
+
 .summary {
+
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
+
+    grid-template-columns:
+        repeat(3, 1fr);
+
     gap: 12px;
+
     margin-top: 15px;
 }
 
+
 .stat {
+
     background: #12151e;
+
     border-radius: 12px;
+
     padding: 16px;
 }
 
+
 .stat-label {
+
     color: #81889b;
+
     font-size: 12px;
+
     margin-bottom: 7px;
 }
 
+
 .stat-value {
+
     font-size: 20px;
+
     font-weight: 800;
 }
 
+
 .price {
+
     color: #aeb5ff;
 }
+
 
 /* ERROR */
 
 .error {
+
     padding: 15px;
-    background: rgba(255, 80, 100, 0.08);
-    border: 1px solid rgba(255, 80, 100, 0.25);
+
+    background:
+        rgba(
+            255,
+            80,
+            100,
+            0.08
+        );
+
+    border:
+        1px solid
+        rgba(
+            255,
+            80,
+            100,
+            0.25
+        );
+
     border-radius: 12px;
+
     color: #ff9ba8;
 }
+
 
 /* FOOTER */
 
 .footer {
+
     text-align: center;
+
     color: #555b6d;
+
     font-size: 12px;
+
     margin-top: 40px;
 }
+
 
 /* MOBILE */
 
 @media (max-width: 700px) {
 
     .container {
-        width: min(100% - 20px, 600px);
+
+        width:
+            min(
+                100% - 20px,
+                600px
+            );
+
         padding-top: 28px;
     }
 
-    .pack-grid {
-        grid-template-columns: repeat(2, 1fr);
+
+    .mode-buttons {
+
+        grid-template-columns: 1fr;
     }
 
+
     .input-row {
+
         flex-direction: column;
     }
 
-    button {
+
+    button.calculate-button {
+
         height: 50px;
     }
 
+
     .summary {
+
         grid-template-columns: 1fr;
+    }
+
+
+    .pack-line {
+
+        gap: 10px;
     }
 
 }
 
 </style>
+
 </head>
+
 
 <body>
 
+
 <div class="container">
+
+
+    <!-- HEADER -->
 
     <header class="header">
 
@@ -304,9 +572,11 @@ button:hover {
             IKK คูณคิดมาแล้ว!
         </div>
 
+
         <h1>
             Echoes Calculator
         </h1>
+
 
         <div class="subtitle">
             คำนวณ Echoes ตามสั่งกับเฮีย❤️
@@ -315,74 +585,80 @@ button:hover {
     </header>
 
 
-    <!-- PACKS -->
-
-    <section class="section">
-
-        <div class="section-title">
-            📦 แพ็กข้างต้น
-        </div>
-
-        <div class="pack-grid">
-
-            <div class="pack">
-                <div class="pack-echoes">66</div>
-                <div class="pack-price">
-                    <strong>30บาท</strong>
-                </div>
-            </div>
-
-            <div class="pack">
-                <div class="pack-echoes">203</div>
-                <div class="pack-price">
-                    <strong>90บาท</strong>
-                </div>
-            </div>
-
-            <div class="pack">
-                <div class="pack-echoes">335</div>
-                <div class="pack-price">
-                    <strong>145บาท</strong>
-                </div>
-            </div>
-
-            <div class="pack">
-                <div class="pack-echoes">759</div>
-                <div class="pack-price">
-                    <strong>285บาท</strong>
-                </div>
-            </div>
-
-        </div>
-
-    </section>
-
 
     <!-- CALCULATOR -->
 
     <section class="calculator">
 
-        <label class="input-label">
+
+        <label class="mode-label">
+            วิธีคำนวณ
+        </label>
+
+
+        <div class="mode-buttons">
+
+
+            <button
+                type="button"
+                id="echoMode"
+                class="mode-button active"
+                onclick="setMode('echoes')"
+            >
+                🔮 คิดตามจำนวน Echoes
+            </button>
+
+
+            <button
+                type="button"
+                id="pointMode"
+                class="mode-button"
+                onclick="setMode('points')"
+            >
+                🪙 คิดตามยอดเติมสะสม
+            </button>
+
+
+        </div>
+
+
+
+        <label
+            class="input-label"
+            id="inputLabel"
+        >
             ต้องการ Echoes เท่าไหร่?
         </label>
 
+
         <div class="input-row">
+
 
             <input
                 type="number"
                 id="target"
                 min="1"
                 placeholder="เช่น 2888"
-                onkeydown="if(event.key === 'Enter') calculate()"
+                onkeydown="
+                    if(event.key === 'Enter')
+                    calculate()
+                "
             >
 
-            <button onclick="calculate()">
+
+            <button
+                class="calculate-button"
+                onclick="calculate()"
+            >
                 คำนวณ
             </button>
 
+
         </div>
 
+
     </section>
+
 
 
     <!-- RESULT -->
@@ -390,82 +666,196 @@ button:hover {
     <div id="result"></div>
 
 
+
+    <!-- FOOTER -->
+
     <div class="footer">
         IKK Calculator · คิดให้แล้ว เอาตังค์ที่รวยเร็วๆๆๆ!
     </div>
 
+
 </div>
+
 
 
 <script>
 
+
+/* =========================
+   PACKAGE DATA
+========================= */
+
+const packages = [
+
+    {
+        echoes: 66,
+        points: 60,
+        price: 30,
+        name: "66 Echoes"
+    },
+
+    {
+        echoes: 203,
+        points: 185,
+        price: 90,
+        name: "203 Echoes"
+    },
+
+    {
+        echoes: 335,
+        points: 305,
+        price: 145,
+        name: "335 Echoes"
+    },
+
+    {
+        echoes: 759,
+        points: 690,
+        price: 290,
+        name: "759 Echoes"
+    }
+
+];
+
+
+
+/* =========================
+   759 PRICE
+========================= */
+
 function get759Price(quantity) {
 
-    if (quantity >= 30) return 278;
+    if (quantity >= 30) {
 
-    if (quantity >= 20) return 280;
-
-    if (quantity >= 10) return 283;
-
-    return 285;
-
-}
-
-
-function calculateSmallPacks(target) {
-
-    const packs = [
-        { echoes: 66, price: 30, name: "66" },
-        { echoes: 203, price: 90, name: "203" },
-        { echoes: 335, price: 145, name: "335" }
-    ];
-
-    if (target <= 0) {
-
-        return {
-            echoes: 0,
-            price: 0,
-            counts: {
-                "66": 0,
-                "203": 0,
-                "335": 0
-            }
-        };
+        return 283;
 
     }
 
 
-    const max = target + 335;
+    if (quantity >= 20) {
 
-    const dp = new Array(max + 1).fill(Infinity);
+        return 285;
 
-    const previous = new Array(max + 1).fill(null);
+    }
+
+
+    if (quantity >= 10) {
+
+        return 287;
+
+    }
+
+
+    return 290;
+
+}
+
+
+
+/* =========================
+   SMALL PACK OPTIMIZER
+========================= */
+
+function calculateSmallPacks(
+    target,
+    mode
+) {
+
+    const smallPackages = [
+
+        packages[0],
+        packages[1],
+        packages[2]
+
+    ];
+
+
+    const maxValue =
+        target +
+        Math.max(
+            ...smallPackages.map(
+                p => mode === "echoes"
+                    ? p.echoes
+                    : p.points
+            )
+        );
+
+
+    const dp =
+        new Array(
+            maxValue + 1
+        ).fill(Infinity);
+
+
+    const previous =
+        new Array(
+            maxValue + 1
+        ).fill(null);
+
 
     dp[0] = 0;
 
 
-    for (let i = 0; i <= max; i++) {
 
-        if (dp[i] === Infinity) continue;
+    for (
+        let i = 0;
+        i <= maxValue;
+        i++
+    ) {
 
 
-        for (const pack of packs) {
+        if (
+            dp[i] === Infinity
+        ) {
 
-            const next = i + pack.echoes;
+            continue;
 
-            if (next <= max) {
+        }
+
+
+
+        for (
+            const pack
+            of smallPackages
+        ) {
+
+
+            const value =
+                mode === "echoes"
+                    ? pack.echoes
+                    : pack.points;
+
+
+            const next =
+                i + value;
+
+
+            if (
+                next <= maxValue
+            ) {
+
 
                 const newPrice =
-                    dp[i] + pack.price;
+                    dp[i] +
+                    pack.price;
 
 
-                if (newPrice < dp[next]) {
+                if (
+                    newPrice <
+                    dp[next]
+                ) {
 
-                    dp[next] = newPrice;
+
+                    dp[next] =
+                        newPrice;
+
 
                     previous[next] = {
+
                         previous: i,
+
                         pack: pack
+
                     };
 
                 }
@@ -477,32 +867,47 @@ function calculateSmallPacks(target) {
     }
 
 
-    let bestAmount = target;
+
+    let bestAmount =
+        target;
 
 
     for (
         let amount = target;
-        amount <= max;
+        amount <= maxValue;
         amount++
     ) {
 
-        if (dp[amount] < dp[bestAmount]) {
 
-            bestAmount = amount;
+        if (
+            dp[amount] <
+            dp[bestAmount]
+        ) {
+
+            bestAmount =
+                amount;
 
         }
 
     }
 
 
+
     const counts = {
+
         "66": 0,
+
         "203": 0,
+
         "335": 0
+
     };
 
 
-    let current = bestAmount;
+
+    let current =
+        bestAmount;
+
 
 
     while (
@@ -510,51 +915,113 @@ function calculateSmallPacks(target) {
         previous[current]
     ) {
 
-        const item = previous[current];
 
-        counts[item.pack.name]++;
+        const item =
+            previous[current];
 
-        current = item.previous;
+
+        counts[
+            item.pack.echoes
+        ]++;
+
+
+        current =
+            item.previous;
 
     }
 
 
+
     return {
-        echoes: bestAmount,
+
+        value: bestAmount,
+
         price: dp[bestAmount],
+
         counts: counts
+
     };
 
 }
 
 
+
+/* =========================
+   MAIN CALCULATOR
+========================= */
+
 function calculate() {
+
 
     const target =
         Number(
-            document.getElementById("target").value
+            document
+                .getElementById("target")
+                .value
         );
 
 
-    if (!target || target <= 0) {
+    const mode =
+        window.calculationMode ||
+        "echoes";
 
-        document.getElementById("result").innerHTML = `
-            <div class="error">
-                กรุณาใส่จำนวน Echoes ที่ต้องการ
-            </div>
-        `;
+
+
+    if (
+        !target ||
+        target <= 0
+    ) {
+
+
+        document
+            .getElementById("result")
+            .innerHTML = `
+
+                <div class="error">
+
+                    กรุณาใส่จำนวน
+                    ${
+                        mode === "echoes"
+                            ? "Echoes"
+                            : "ยอดเติมสะสม"
+                    }
+                    ที่ต้องการ
+
+                </div>
+
+            `;
+
 
         return;
 
     }
 
 
+
     let best = null;
 
 
-    const max759 =
-        Math.ceil(target / 759);
 
+    /*
+        จำนวนแพ็ก 759
+        ที่ต้องลอง
+    */
+
+    const max759 =
+        Math.ceil(
+            target /
+            (
+                mode === "echoes"
+                    ? 759
+                    : 690
+            )
+        );
+
+
+
+    /*
+        ลองทุกจำนวนของแพ็ก 759
+    */
 
     for (
         let qty759 = 0;
@@ -562,35 +1029,88 @@ function calculate() {
         qty759++
     ) {
 
+
         const echoes759 =
-            qty759 * 759;
+            qty759 *
+            759;
+
+
+        const points759 =
+            qty759 *
+            690;
+
 
 
         const price759 =
             qty759 > 0
-            ? qty759 * get759Price(qty759)
-            : 0;
+                ? qty759 *
+                    get759Price(qty759)
+                : 0;
+
+
+
+        const value759 =
+            mode === "echoes"
+                ? echoes759
+                : points759;
+
 
 
         const remaining =
             Math.max(
                 0,
-                target - echoes759
+                target -
+                value759
             );
+
 
 
         const small =
             calculateSmallPacks(
-                remaining
+                remaining,
+                mode
             );
 
 
+
         const totalEchoes =
-            echoes759 + small.echoes;
+            echoes759 +
+            (
+                small.counts["66"] *
+                66
+            ) +
+            (
+                small.counts["203"] *
+                203
+            ) +
+            (
+                small.counts["335"] *
+                335
+            );
+
+
+
+        const totalPoints =
+            points759 +
+            (
+                small.counts["66"] *
+                60
+            ) +
+            (
+                small.counts["203"] *
+                185
+            ) +
+            (
+                small.counts["335"] *
+                305
+            );
+
 
 
         const totalPrice =
-            price759 + small.price;
+            price759 +
+            small.price;
+
 
 
         const result = {
@@ -601,56 +1121,106 @@ function calculate() {
 
             small: small,
 
-            totalEchoes: totalEchoes,
+            totalEchoes:
+                totalEchoes,
 
-            totalPrice: totalPrice
+            totalPoints:
+                totalPoints,
+
+            totalPrice:
+                totalPrice
 
         };
 
 
+
+        /*
+            เลือกราคาที่ถูกที่สุด
+        */
+
         if (
             best === null ||
-            totalPrice < best.totalPrice
+            totalPrice <
+            best.totalPrice
         ) {
 
             best = result;
 
         }
 
+
     }
+
+
+
+    /* =========================
+       RESULT HTML
+    ========================= */
 
 
     let html = `
 
         <div class="result-card">
 
+
             <div class="result-title">
+
                 🏆 ผลการคำนวณ
+
             </div>
+
+
 
             <div class="best">
 
+
                 <div class="best-label">
+
                     CHEAPEST COMBINATION
+
                 </div>
 
     `;
 
 
-    if (best.qty759 > 0) {
+
+    /*
+        759
+    */
+
+    if (
+        best.qty759 > 0
+    ) {
+
 
         html += `
 
             <div class="pack-line">
 
+
                 <div class="pack-line-name">
-                    759 Echoes × ${best.qty759}
+
+                    759 Echoes ×
+                    ${best.qty759}
+
                 </div>
 
+
                 <div class="pack-line-price">
-                    ${best.price759.toLocaleString()}บาท
-                    · ${get759Price(best.qty759)}บาท/แพ็ก
+
+                    ${
+                        best.price759
+                            .toLocaleString()
+                    }บาท
+                    ·
+                    ${
+                        get759Price(
+                            best.qty759
+                        )
+                    }บาท/แพ็ก
+
                 </div>
+
 
             </div>
 
@@ -658,24 +1228,45 @@ function calculate() {
 
     }
 
+
+
+    /*
+        335
+    */
 
     if (
         best.small.counts["335"] > 0
     ) {
 
+
+        const count =
+            best.small.counts["335"];
+
+
         html += `
 
             <div class="pack-line">
 
+
                 <div class="pack-line-name">
-                    335 Echoes × ${best.small.counts["335"]}
+
+                    335 Echoes ×
+                    ${count}
+
                 </div>
 
+
                 <div class="pack-line-price">
-                    ${(
-                        best.small.counts["335"] * 145
-                    ).toLocaleString()}บาท
+
+                    ${
+                        (
+                            count *
+                            145
+                        ).toLocaleString()
+                    }บาท
+
                 </div>
+
 
             </div>
 
@@ -683,24 +1274,45 @@ function calculate() {
 
     }
 
+
+
+    /*
+        203
+    */
 
     if (
         best.small.counts["203"] > 0
     ) {
 
+
+        const count =
+            best.small.counts["203"];
+
+
         html += `
 
             <div class="pack-line">
 
+
                 <div class="pack-line-name">
-                    203 Echoes × ${best.small.counts["203"]}
+
+                    203 Echoes ×
+                    ${count}
+
                 </div>
 
+
                 <div class="pack-line-price">
-                    ${(
-                        best.small.counts["203"] * 90
-                    ).toLocaleString()}บาท
+
+                    ${
+                        (
+                            count *
+                            90
+                        ).toLocaleString()
+                    }บาท
+
                 </div>
+
 
             </div>
 
@@ -708,30 +1320,52 @@ function calculate() {
 
     }
 
+
+
+    /*
+        66
+    */
 
     if (
         best.small.counts["66"] > 0
     ) {
 
+
+        const count =
+            best.small.counts["66"];
+
+
         html += `
 
             <div class="pack-line">
 
+
                 <div class="pack-line-name">
-                    66 Echoes × ${best.small.counts["66"]}
+
+                    66 Echoes ×
+                    ${count}
+
                 </div>
 
+
                 <div class="pack-line-price">
-                    ${(
-                        best.small.counts["66"] * 30
-                    ).toLocaleString()}บาท
+
+                    ${
+                        (
+                            count *
+                            30
+                        ).toLocaleString()
+                    }บาท
+
                 </div>
+
 
             </div>
 
         `;
 
     }
+
 
 
     html += `
@@ -739,59 +1373,224 @@ function calculate() {
             </div>
 
 
+
             <div class="summary">
 
+
                 <div class="stat">
 
+
                     <div class="stat-label">
-                        ต้องการ
+
+                        ${
+                            mode === "echoes"
+                                ? "ต้องการ Echoes"
+                                : "ต้องการยอดเติมสะสม"
+                        }
+
                     </div>
 
+
                     <div class="stat-value">
-                        ${target.toLocaleString()}
+
+                        ${
+                            target.toLocaleString()
+                        }
+
                     </div>
+
 
                 </div>
 
 
+
                 <div class="stat">
 
+
                     <div class="stat-label">
-                        ได้รับทั้งหมด
+
+                        ${
+                            mode === "echoes"
+                                ? "ได้รับ Echoes"
+                                : "ได้ยอดเติมสะสม"
+                        }
+
                     </div>
 
+
                     <div class="stat-value">
-                        ${best.totalEchoes.toLocaleString()}
+
+                        ${
+                            (
+                                mode === "echoes"
+                                    ? best.totalEchoes
+                                    : best.totalPoints
+                            ).toLocaleString()
+                        }
+
                     </div>
+
 
                 </div>
 
 
+
                 <div class="stat">
 
+
                     <div class="stat-label">
+
                         ราคา
+
                     </div>
+
 
                     <div class="stat-value price">
-                        ${best.totalPrice.toLocaleString()}฿
+
+                        ${
+                            best.totalPrice
+                                .toLocaleString()
+                        }฿
+
                     </div>
+
 
                 </div>
 
+
             </div>
+
 
         </div>
 
     `;
 
 
-    document.getElementById("result").innerHTML =
+
+    document
+        .getElementById("result")
+        .innerHTML =
         html;
 
 }
 
+
+
+/* =========================
+   MODE SWITCH
+========================= */
+
+window.calculationMode =
+    "echoes";
+
+
+
+function setMode(mode) {
+
+
+    window.calculationMode =
+        mode;
+
+
+
+    const echoButton =
+        document
+            .getElementById(
+                "echoMode"
+            );
+
+
+    const pointButton =
+        document
+            .getElementById(
+                "pointMode"
+            );
+
+
+    const input =
+        document
+            .getElementById(
+                "target"
+            );
+
+
+    const label =
+        document
+            .getElementById(
+                "inputLabel"
+            );
+
+
+
+    if (
+        mode === "echoes"
+    ) {
+
+
+        echoButton
+            .classList
+            .add("active");
+
+
+        pointButton
+            .classList
+            .remove("active");
+
+
+        label.textContent =
+            "ต้องการ Echoes เท่าไหร่?";
+
+
+        input.placeholder =
+            "เช่น 2888";
+
+    }
+
+
+    else {
+
+
+        pointButton
+            .classList
+            .add("active");
+
+
+        echoButton
+            .classList
+            .remove("active");
+
+
+        label.textContent =
+            "ต้องการยอดเติมสะสมเท่าไหร่?";
+
+
+        input.placeholder =
+            "เช่น 10000";
+
+    }
+
+
+
+    /*
+        เคลียร์ผลเก่า
+        เมื่อเปลี่ยนโหมด
+    */
+
+    document
+        .getElementById("result")
+        .innerHTML = "";
+
+
+
+    input.value = "";
+
+}
+
+
+
 </script>
 
+
 </body>
+
 </html>
