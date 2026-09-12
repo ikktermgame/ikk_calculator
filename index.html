@@ -6,122 +6,963 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>IKK Toolkit Mockup</title>
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Mitr:wght@400;500;600;700&family=Noto+Sans+Thai:wght@400;500;600;700&display=swap');
-*{box-sizing:border-box}body{margin:0;background:#a8d7e9;color:#51473f;font-family:'Noto Sans Thai',sans-serif}
-.app{max-width:1400px;margin:auto;padding:28px 40px}.brand{margin-left:380px;margin-bottom:18px}
-.brand small,.side-title,.tool h2{font-family:Mitr,sans-serif}.brand small{font-size:28px;font-weight:600}
-.brand h1{margin:0;font:500 64px/1 Mitr,sans-serif}
-.layout{display:grid;grid-template-columns:360px 1fr;gap:40px}
-.sidebar,.content{background:#fff;border-radius:30px;box-shadow:0 12px 30px #51473f18}
-.sidebar{padding:20px 26px;min-height:650px}
-.character{
-    height:280px;
-    border-radius:22px;
-    background:#fff;
-    display:grid;
-    place-items:center;
-    overflow:hidden;
-    margin-bottom:10px;
-}
-.character img{
-    width:100%;
-    height:100%;
-    object-fit:contain;
-}
-.side-title{font-size:26px;margin:5px 0 14px}.group{font:600 15px Mitr;color:#8b7b70;margin:18px 0 8px}
-.nav{display:grid;gap:9px}.nav button{border:2px solid transparent;background:#fffaf5;color:#5a5049;padding:13px 14px;border-radius:15px;text-align:left;cursor:pointer}
-.nav button.active{background:#fff3d6;border-color:#ffbd2e;font-weight:700}
-.nav button:hover{transform:translateX(3px)}.icon{display:inline-block;width:28px}
-.content{padding:24px;min-height:650px}.tool h2{margin:0;font-size:28px}.tool p{margin:4px 0 18px;color:#8b7b70}
-.card{background:#151821;color:#fff;border-radius:20px;padding:20px}.label{font-size:13px;color:#c5c9dc;margin-bottom:8px}
-.row{display:flex;gap:10px}input{width:100%;background:#0d1017;color:white;border:1px solid #41475f;border-radius:13px;padding:13px;outline:0}
-button.primary{border:0;border-radius:13px;padding:0 22px;background:#7d89ff;color:white;font-weight:700}
-.result{margin-top:16px;border:1px solid #6978ff;background:#1b2034;border-radius:16px;overflow:hidden}
-.title{padding:13px;color:#9ca8ff;font-size:12px;letter-spacing:.08em}.line{padding:11px 15px;border-top:1px solid #30354a}
-.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:10px}.stat{background:#10131b;border-radius:13px;padding:12px}.stat span{display:block;color:#8d93a9;font-size:12px}.stat strong{font-size:23px}.price strong{color:#9ca8ff}
-@media(max-width:850px){
-    .app{padding:18px}
-    .brand{margin-left:0}
-    .brand h1{font-size:45px}
-    .layout{grid-template-columns:1fr}
-    .sidebar{min-height:0}
-    .nav{grid-template-columns:1fr}
-    .content{min-height:0}
-    .claim-stats{grid-template-columns:1fr}
+@import url('https://fonts.googleapis.com/css2?family=Mitr:wght@400;500;600;700&family=Press+Start+2P&family=Noto+Sans+Thai:wght@400;500;600;700&display=swap');
 
-    .character{
-        height:auto;
-        min-height:0;
-        overflow:visible;
-    }
-
-    .character img{
-        width:100%;
-        height:auto;
-        object-fit:contain;
-        display:block;
-    }
+:root{
+  --sky:#9fe4f3;
+  --sky2:#dff7fb;
+  --lav:#dfd0f7;
+  --pink:#ff78ae;
+  --pink2:#ff4f91;
+  --yellow:#ffd34f;
+  --yellow2:#ffc13a;
+  --orange:#ff9f24;
+  --navy:#25224b;
+  --text:#403a4a;
+  --muted:#7c7180;
+  --white:#fffdfb;
 }
 
-/* ===== Earn Point page ===== */
-.claim-wrap{max-width:760px;margin:0 auto}
-.claim-form-card,.claim-result-card{position:relative;background:#fff;border:2.5px solid #7EC8E3;border-radius:24px;padding:22px;box-shadow:0 6px 0 rgba(126,200,227,.25)}
-.claim-badge{position:absolute;top:-13px;right:-8px;background:#FFD98E;color:#475569;font-size:11px;font-weight:600;padding:5px 12px;border-radius:999px;transform:rotate(6deg)}
+*{box-sizing:border-box}
+
+html{scroll-behavior:smooth}
+
+body{
+  margin:0;
+  color:var(--text);
+  font-family:'Noto Sans Thai',sans-serif;
+  background:
+    radial-gradient(circle at 12% 12%,rgba(255,255,255,.9) 0 48px,transparent 49px),
+    radial-gradient(circle at 88% 18%,rgba(255,255,255,.7) 0 72px,transparent 73px),
+    linear-gradient(135deg,#a8e8f4 0%,#d9f5fa 38%,#e4d3f8 72%,#aee7f4 100%);
+  min-height:100vh;
+  overflow-x:hidden;
+}
+
+body:before,
+body:after{
+  content:"";
+  position:fixed;
+  z-index:-1;
+  pointer-events:none;
+  opacity:.45;
+}
+
+body:before{
+  width:420px;height:420px;
+  left:-180px;top:280px;
+  background:radial-gradient(circle,#fff 0 25%,transparent 26%);
+  filter:blur(2px);
+}
+
+body:after{
+  width:500px;height:500px;
+  right:-240px;bottom:80px;
+  background:radial-gradient(circle,#fff 0 22%,transparent 23%);
+}
+
+button,input{font:inherit}
+
+button{cursor:pointer}
+
+.app{
+  width:min(1440px,100%);
+  margin:0 auto;
+  padding:18px 28px 0;
+}
+
+/* ===== Top navigation ===== */
+.topbar{
+  position:relative;
+  z-index:10;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:4px;
+  width:min(700px,calc(100% - 280px));
+  margin:0 auto 8px;
+  padding:7px;
+  background:rgba(255,255,255,.94);
+  border:3px solid #74cce2;
+  border-radius:18px;
+  box-shadow:0 5px 0 rgba(58,160,190,.2);
+}
+
+.topbar button{
+  border:0;
+  background:transparent;
+  color:var(--navy);
+  padding:11px 19px;
+  border-radius:12px;
+  font-family:'Press Start 2P',monospace;
+  font-size:11px;
+  transition:.16s ease;
+}
+
+.topbar button:hover{
+  transform:translateY(-2px);
+  background:#eefaff;
+}
+
+.topbar button.active{
+  background:var(--yellow);
+  box-shadow:0 3px 0 var(--orange);
+}
+
+/* ===== Brand / hero ===== */
+.hero{
+  position:relative;
+  min-height:385px;
+  padding:38px 28px 8px;
+  overflow:hidden;
+}
+
+.logo{
+  position:absolute;
+  left:30px;
+  top:0;
+  width:190px;
+  max-width:25vw;
+  z-index:3;
+}
+
+.logo img{
+  display:block;
+  width:100%;
+  height:auto;
+}
+
+.hero-copy{
+  position:relative;
+  z-index:2;
+  width:min(720px,65%);
+  margin:20px auto 0;
+  text-align:center;
+}
+
+.kicker{
+  display:inline-block;
+  margin-bottom:8px;
+  color:#68a9c2;
+  font-family:'Press Start 2P',monospace;
+  font-size:14px;
+  letter-spacing:.02em;
+}
+
+.hero h1{
+  margin:0;
+  color:var(--pink2);
+  font-family:'Press Start 2P',monospace;
+  font-size:clamp(34px,5vw,68px);
+  line-height:1.28;
+  text-shadow:
+    3px 3px 0 #fff,
+    6px 6px 0 var(--navy);
+  letter-spacing:.01em;
+}
+
+.hero h2{
+  margin:12px 0 14px;
+  color:var(--yellow2);
+  font-family:'Press Start 2P',monospace;
+  font-size:clamp(20px,3vw,40px);
+  line-height:1.35;
+  text-shadow:
+    2px 2px 0 #fff,
+    4px 4px 0 var(--navy);
+}
+
+.hero-sub{
+  display:inline-block;
+  margin:0;
+  padding:9px 26px;
+  border-radius:12px;
+  background:var(--pink);
+  color:#fff;
+  font-size:17px;
+  font-weight:600;
+  box-shadow:0 4px 0 #dc5a91;
+}
+
+.hero-character{
+  position:absolute;
+  right:18px;
+  bottom:-2px;
+  width:min(430px,38vw);
+  max-height:390px;
+  z-index:3;
+}
+
+.hero-character img{
+  display:block;
+  width:100%;
+  height:auto;
+  max-height:390px;
+  object-fit:contain;
+  object-position:center bottom;
+}
+
+.cloud{
+  position:absolute;
+  z-index:1;
+  border-radius:999px;
+  background:rgba(255,255,255,.82);
+  filter:blur(.2px);
+}
+
+.cloud.c1{width:330px;height:78px;left:-70px;bottom:48px}
+.cloud.c2{width:280px;height:70px;right:300px;bottom:25px}
+.cloud.c3{width:380px;height:85px;right:-120px;bottom:85px}
+
+.pixel-deco{
+  position:absolute;
+  font-family:'Press Start 2P',monospace;
+  font-size:24px;
+  color:#fff;
+  text-shadow:2px 2px 0 #8acde1;
+  z-index:2;
+}
+
+.d1{left:25%;top:70px;color:#ffd34f}
+.d2{right:31%;top:80px;color:#ff86b8}
+.d3{left:8%;bottom:80px;color:#fff}
+.d4{right:6%;top:18px;color:#ffd34f}
+
+/* ===== Main content ===== */
+.content-shell{
+  position:relative;
+  z-index:4;
+  background:rgba(255,255,255,.94);
+  border-radius:28px 28px 0 0;
+  padding:28px 34px 38px;
+  box-shadow:0 -5px 22px rgba(61,91,122,.08);
+  min-height:520px;
+}
+
+.section-head{
+  display:flex;
+  align-items:end;
+  justify-content:space-between;
+  gap:16px;
+  margin:0 4px 18px;
+}
+
+.section-title{
+  margin:0;
+  color:var(--navy);
+  font-family:'Press Start 2P',monospace;
+  font-size:26px;
+  line-height:1.45;
+}
+
+.section-title:before{
+  content:"✦";
+  color:var(--yellow2);
+  margin-right:10px;
+  text-shadow:2px 2px 0 var(--orange);
+}
+
+.section-note{
+  color:#74b5d1;
+  font-family:'Press Start 2P',monospace;
+  font-size:9px;
+  white-space:nowrap;
+}
+
+.tool-grid{
+  display:grid;
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:20px;
+}
+
+.tool-card{
+  position:relative;
+  min-height:245px;
+  padding:20px 20px 16px;
+  border:3px solid var(--orange);
+  border-radius:18px;
+  background:linear-gradient(145deg,#ffe071,#ffc94a);
+  box-shadow:0 7px 0 #ff9f24;
+  overflow:hidden;
+  transition:.18s ease;
+}
+
+.tool-card:before,
+.tool-card:after{
+  content:"✦";
+  position:absolute;
+  color:#fff5b6;
+  font-size:25px;
+  text-shadow:1px 1px 0 #f4ae27;
+}
+
+.tool-card:before{left:10px;top:8px}
+.tool-card:after{right:10px;bottom:8px}
+
+.tool-card:hover{
+  transform:translateY(-5px);
+  box-shadow:0 12px 0 #ff9f24;
+}
+
+.tool-card-top{
+  display:flex;
+  align-items:center;
+  gap:14px;
+  min-height:100px;
+}
+
+.tool-icon{
+  width:96px;
+  height:96px;
+  flex:0 0 96px;
+  display:grid;
+  place-items:center;
+  font-size:64px;
+  background:rgba(255,255,255,.42);
+  border:3px solid rgba(255,255,255,.85);
+  border-radius:16px;
+  box-shadow:4px 4px 0 rgba(225,137,30,.22);
+}
+
+.tool-icon img{
+  max-width:88px;
+  max-height:88px;
+  width:auto;
+  height:auto;
+  object-fit:contain;
+}
+
+.tool-name{
+  margin:0;
+  color:#fff;
+  font-family:'Press Start 2P',monospace;
+  font-size:17px;
+  line-height:1.45;
+  text-shadow:
+    2px 2px 0 var(--pink2),
+    3px 3px 0 #fff;
+}
+
+.tool-desc{
+  min-height:45px;
+  margin:12px 2px 14px;
+  color:#473b32;
+  font-size:15px;
+  line-height:1.55;
+  font-weight:600;
+}
+
+.tool-open{
+  width:100%;
+  border:3px solid #fff;
+  border-radius:11px;
+  padding:9px 13px;
+  background:#fff;
+  color:var(--navy);
+  font-weight:700;
+  box-shadow:0 3px 0 rgba(66,53,48,.14);
+  transition:.14s ease;
+}
+
+.tool-open:hover{
+  transform:translateY(-2px);
+  background:#fffaf1;
+}
+
+.tool-open span{float:right;font-size:22px;line-height:15px}
+
+/* ===== Tools shortcuts ===== */
+.tools-section{margin-top:34px}
+
+.shortcut-grid{
+  display:grid;
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:16px;
+}
+
+.shortcut{
+  display:flex;
+  align-items:center;
+  gap:14px;
+  min-height:82px;
+  border:3px solid #9bdcf0;
+  border-radius:15px;
+  background:#fff;
+  padding:12px 18px;
+  color:var(--navy);
+  box-shadow:4px 5px 0 rgba(126,200,227,.18);
+  transition:.16s ease;
+}
+
+.shortcut:hover{
+  transform:translateY(-3px);
+  border-color:#ff9fd0;
+}
+
+.shortcut .sicon{font-size:35px}
+.shortcut strong{font-size:16px}
+.shortcut span:last-child{margin-left:auto;font-size:24px}
+
+/* ===== Actual calculator pages ===== */
+.page-wrap{max-width:850px;margin:0 auto}
+
+.page-title{
+  margin:0 0 5px;
+  color:var(--navy);
+  font-family:'Press Start 2P',monospace;
+  font-size:22px;
+  line-height:1.6;
+}
+
+.page-sub{
+  margin:0 0 18px;
+  color:var(--muted);
+}
+
+.calc-card{
+  background:linear-gradient(145deg,#fffefb,#fff8eb);
+  border:3px solid var(--orange);
+  border-radius:20px;
+  padding:24px;
+  box-shadow:0 7px 0 #ffc96a;
+}
+
+.calc-label{
+  display:block;
+  margin-bottom:8px;
+  color:#6b5b50;
+  font-weight:700;
+}
+
+.calc-row{display:flex;gap:10px}
+
+.calc-input{
+  width:100%;
+  background:#fff;
+  color:var(--text);
+  border:3px solid #bfe9f3;
+  border-radius:13px;
+  padding:12px 14px;
+  outline:0;
+}
+
+.calc-input:focus{
+  border-color:#74cce2;
+  box-shadow:0 0 0 4px rgba(116,204,226,.18);
+}
+
+.calc-primary{
+  border:0;
+  border-radius:13px;
+  padding:0 23px;
+  background:var(--pink);
+  color:#fff;
+  font-weight:700;
+  box-shadow:0 4px 0 #d85d94;
+  white-space:nowrap;
+}
+
+.result{
+  margin-top:18px;
+  border:3px solid #9bdcf0;
+  background:#fff;
+  border-radius:16px;
+  overflow:hidden;
+}
+
+.result .title{
+  padding:12px 15px;
+  background:#eafaff;
+  color:#5c9bb6;
+  font-family:'Press Start 2P',monospace;
+  font-size:10px;
+}
+
+.result .line{
+  padding:11px 15px;
+  border-top:1px dashed #dceff5;
+}
+
+.stats{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:10px;
+  margin-top:10px;
+}
+
+.stat{
+  background:#fff9df;
+  border:2px solid #ffe08a;
+  border-radius:13px;
+  padding:12px;
+}
+
+.stat span{
+  display:block;
+  color:#8a7c6d;
+  font-size:12px;
+}
+
+.stat strong{
+  font-size:22px;
+  color:var(--navy);
+}
+
+.price strong{color:#e45a91}
+
+/* ===== Claim page — same IKK yellow/pink calculator theme ===== */
+.claim-wrap{max-width:850px;margin:0 auto}
+
+.claim-form-card,
+.claim-result-card{
+  position:relative;
+  background:linear-gradient(145deg,#ffe071,#ffc94a);
+  border:3px solid var(--orange);
+  border-radius:20px;
+  padding:24px;
+  box-shadow:0 7px 0 #ff9f24;
+}
+
+.claim-badge{
+  position:absolute;
+  top:-15px;
+  right:12px;
+  background:var(--pink);
+  color:#fff;
+  font-size:12px;
+  font-weight:700;
+  padding:6px 14px;
+  border-radius:999px;
+  transform:rotate(4deg);
+  box-shadow:2px 3px 0 #d85d94;
+}
+
 .claim-form{display:flex;flex-direction:column;gap:16px}
-.claim-field label{display:block;font-size:14px;font-weight:500;color:#64748b;margin-bottom:6px}
-.claim-input{width:100%!important;background:#fff!important;color:#334155!important;border:2px solid #e2e8f0!important;border-radius:16px!important;padding:12px 16px!important;outline:none!important}
-.claim-input:focus{border-color:#7EC8E3!important;box-shadow:0 0 0 4px rgba(126,200,227,.20)}
-.claim-input::placeholder{color:#cbd5e1}
-.claim-btn{margin-top:4px;border:0;border-radius:16px;background:#FF8FC4;color:#fff;font-weight:600;padding:14px;box-shadow:0 4px 0 #e06aa0;cursor:pointer}
+
+.claim-field label{
+  display:block;
+  font-size:14px;
+  font-weight:700;
+  color:#5d4d43;
+  margin-bottom:7px;
+}
+
+.claim-input{
+  width:100%!important;
+  background:#fffdf8!important;
+  color:#403a4a!important;
+  border:3px solid rgba(255,255,255,.95)!important;
+  border-radius:14px!important;
+  padding:12px 16px!important;
+  outline:none!important;
+  box-shadow:0 2px 0 rgba(221,146,33,.12);
+}
+
+.claim-input:focus{
+  border-color:#fff!important;
+  box-shadow:0 0 0 4px rgba(255,255,255,.35),0 2px 0 rgba(221,146,33,.12);
+}
+
+.claim-input::placeholder{color:#b9afa6}
+
+.claim-btn{
+  margin-top:4px;
+  border:3px solid #fff;
+  border-radius:14px;
+  background:var(--pink);
+  color:#fff;
+  font-weight:700;
+  padding:13px;
+  box-shadow:0 4px 0 #d85d94;
+}
+
+.claim-btn:hover{
+  transform:translateY(-2px);
+  background:var(--pink2);
+}
+
 .claim-btn:disabled{opacity:.7;cursor:not-allowed}
-.claim-error{margin-top:12px;color:#e11d48;background:#fff1f2;border-radius:12px;padding:9px 12px;font-size:14px}
+
+.claim-error{
+  margin-top:12px;
+  color:#b4234b;
+  background:#fff1f2;
+  border-radius:12px;
+  padding:9px 12px;
+  font-size:14px;
+}
+
 .claim-result-card{margin-top:18px}
+
 .claim-success{text-align:center;margin-bottom:16px}
 .claim-success .emoji{font-size:30px}
-.claim-success p{font-family:Mitr,sans-serif;font-size:18px;color:#2E7FC1;font-weight:600;margin:4px 0 0}
-.claim-stats{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-bottom:16px}
-.claim-stat{border-radius:16px;padding:12px;text-align:center;background:#F5FAFF}
-.claim-stat.blue{background:rgba(126,200,227,.15)}
-.claim-stat strong{display:block;font-family:Mitr,sans-serif;font-size:28px;color:#2E7FC1}
-.claim-stat span{font-size:12px;color:#64748b}
-.claim-remainder{display:flex;justify-content:space-between;align-items:center;font-size:14px;color:#64748b;border:1px dashed #e2e8f0;border-radius:16px;padding:10px 14px;margin-bottom:14px}
-.claim-upsell{background:rgba(255,217,142,.40);border:1px solid #FFD98E;border-radius:16px;padding:12px 14px;display:flex;gap:8px;align-items:flex-start;margin-bottom:14px;color:#334155;font-size:14px}
-.claim-back{width:100%;border:2px solid #7EC8E3;background:#fff;color:#2E7FC1;font-weight:600;border-radius:16px;padding:10px;cursor:pointer}
-.claim-spinner{display:inline-block;width:18px;height:18px;border:3px solid rgba(255,255,255,.4);border-top-color:#fff;border-radius:50%;animation:claimSpin .7s linear infinite;vertical-align:middle;margin-left:6px}
+.claim-success p{
+  font-family:Mitr,sans-serif;
+  font-size:20px;
+  color:var(--pink2);
+  font-weight:700;
+  margin:4px 0 0;
+}
+
+.claim-stats{
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:12px;
+  margin-bottom:16px;
+}
+
+.claim-stat{
+  border-radius:16px;
+  padding:12px;
+  text-align:center;
+  background:rgba(255,255,255,.72);
+  border:2px solid rgba(255,255,255,.9);
+}
+
+.claim-stat.blue{background:rgba(255,255,255,.72)}
+
+.claim-stat strong{
+  display:block;
+  font-family:Mitr,sans-serif;
+  font-size:28px;
+  color:var(--navy);
+}
+
+.claim-stat span{font-size:12px;color:#6f6259}
+
+.claim-remainder{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  font-size:14px;
+  color:#6f6259;
+  border:2px dashed rgba(255,255,255,.95);
+  background:rgba(255,255,255,.45);
+  border-radius:16px;
+  padding:10px 14px;
+  margin-bottom:14px;
+}
+
+.claim-upsell{
+  background:rgba(255,255,255,.72);
+  border:2px solid rgba(255,255,255,.9);
+  border-radius:16px;
+  padding:12px 14px;
+  display:flex;
+  gap:8px;
+  align-items:flex-start;
+  margin-bottom:14px;
+  color:#403a4a;
+  font-size:14px;
+}
+
+.claim-back{
+  width:100%;
+  border:3px solid #fff;
+  background:#fff;
+  color:var(--navy);
+  font-weight:700;
+  border-radius:14px;
+  padding:10px;
+  box-shadow:0 3px 0 rgba(66,53,48,.14);
+}
+
+.claim-back:hover{
+  background:#fffaf1;
+  transform:translateY(-2px);
+}
+
+.claim-spinner{
+  display:inline-block;
+  width:18px;
+  height:18px;
+  border:3px solid rgba(255,255,255,.4);
+  border-top-color:#fff;
+  border-radius:50%;
+  animation:claimSpin .7s linear infinite;
+  vertical-align:middle;
+  margin-left:6px;
+}
+
 @keyframes claimSpin{to{transform:rotate(360deg)}}
 
+/* ===== Footer ===== */
+.footer{
+  position:relative;
+  z-index:5;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:28px;
+  min-height:76px;
+  padding:12px 24px;
+  background:linear-gradient(#ffd04a,#ffc23a);
+  border-top:4px solid #ff9f24;
+  color:#fff;
+  text-align:center;
+}
+
+.footer-brand{
+  font-family:'Press Start 2P',monospace;
+  font-size:13px;
+  text-shadow:2px 2px 0 #e28c25;
+}
+
+.footer-links{
+  display:flex;
+  gap:20px;
+  align-items:center;
+  font-size:13px;
+  font-weight:700;
+}
+
+.footer-links a{color:#fff;text-decoration:none}
+
+.footer-tag{
+  font-family:'Press Start 2P',monospace;
+  font-size:9px;
+  line-height:1.6;
+  color:#fff;
+  text-shadow:1px 1px 0 #e28c25;
+}
+
+/* ===== Responsive ===== */
+@media(max-width:1100px){
+  .topbar{width:min(760px,100%)}
+  .hero{min-height:340px}
+  .hero-character{width:360px}
+  .logo{width:155px}
+  .tool-grid{grid-template-columns:1fr}
+  .tool-card{min-height:205px}
+  .shortcut-grid{grid-template-columns:1fr 1fr}
+}
+
+@media(max-width:760px){
+  .app{padding:10px 10px 0}
+
+  .topbar{
+    width:100%;
+    overflow-x:auto;
+    justify-content:flex-start;
+    margin-bottom:4px;
+    border-radius:14px;
+  }
+
+  .topbar button{
+    font-size:8px;
+    padding:10px 12px;
+    white-space:nowrap;
+  }
+
+  .hero{
+    min-height:430px;
+    padding:24px 10px 0;
+  }
+
+  .logo{
+    left:10px;
+    top:4px;
+    width:120px;
+    max-width:30vw;
+  }
+
+  .hero-copy{
+    width:100%;
+    margin-top:76px;
+  }
+
+  .kicker{font-size:9px}
+
+  .hero h1{
+    font-size:31px;
+    text-shadow:2px 2px 0 #fff,4px 4px 0 var(--navy);
+  }
+
+  .hero h2{
+    font-size:19px;
+    margin-top:10px;
+  }
+
+  .hero-sub{
+    font-size:13px;
+    padding:8px 13px;
+  }
+
+  .hero-character{
+    right:50%;
+    transform:translateX(50%);
+    bottom:-4px;
+    width:min(330px,78vw);
+    max-height:285px;
+  }
+
+  .cloud.c2{right:-70px}
+  .d1{left:7%;top:150px}
+  .d2{right:7%;top:135px}
+  .d3{left:3%;bottom:120px}
+  .d4{right:4%;top:80px}
+
+  .content-shell{
+    padding:22px 13px 30px;
+    border-radius:22px 22px 0 0;
+  }
+
+  .section-head{
+    align-items:flex-start;
+    flex-direction:column;
+    margin-bottom:14px;
+  }
+
+  .section-title{font-size:18px}
+  .section-note{font-size:7px}
+
+  .tool-card{
+    min-height:0;
+    padding:16px;
+  }
+
+  .tool-card-top{min-height:88px}
+  .tool-icon{width:78px;height:78px;flex-basis:78px;font-size:50px}
+  .tool-icon img{max-width:72px;max-height:72px}
+  .tool-name{font-size:13px}
+  .tool-desc{font-size:14px}
+
+  .shortcut-grid{grid-template-columns:1fr}
+  .calc-row{flex-direction:column}
+  .calc-primary{min-height:48px}
+  .stats{grid-template-columns:1fr}
+  .footer{flex-direction:column;gap:8px;padding:15px}
+  .footer-links{flex-wrap:wrap;justify-content:center;gap:10px 15px}
+}
+
+@media(max-width:420px){
+  .hero{min-height:395px}
+  .hero h1{font-size:25px}
+  .hero h2{font-size:16px}
+  .hero-character{width:285px}
+}
 </style>
 </head>
 <body>
 <div class="app">
-  <header class="brand"><small>IKK คุณคิดมาแล้ว!</small><h1 id="title">Echoes Calculator</h1></header>
-  <div class="layout">
-    <aside class="sidebar">
-        <div class="character">
-            <img src="ikk_character.PNG" alt="IKK Character">
+
+  <nav class="topbar">
+    <button class="active" onclick="home(this)">⌂ HOME</button>
+    <button onclick="show('echoes',this)">▣ CALCULATOR</button>
+    <button onclick="show('claim',this)">★ TOOLS</button>
+    <button onclick="scrollToSection('footer')">▤ GUIDE</button>
+  </nav>
+
+  <header class="hero">
+    <div class="logo">
+      <img src="ikk.png" alt="IKK TERM GAME">
+    </div>
+
+    <div class="pixel-deco d1">✚</div>
+    <div class="pixel-deco d2">✦</div>
+    <div class="pixel-deco d3">✦</div>
+    <div class="pixel-deco d4">✚</div>
+
+    <div class="cloud c1"></div>
+    <div class="cloud c2"></div>
+    <div class="cloud c3"></div>
+
+    <div class="hero-copy">
+      <div class="kicker">IKK TERM GAME</div>
+      <h1>IKK</h1>
+      <h2>CALCULATOR</h2>
+      <p class="hero-sub">เครื่องมือช่วยคำนวณสำหรับเหล่า IKK</p>
+    </div>
+
+    <div class="hero-character">
+      <img src="ikk_character.PNG" alt="IKK Character">
+    </div>
+  </header>
+
+  <main class="content-shell" id="content">
+    <section id="homePage">
+      <div class="section-head">
+        <h2 class="section-title">CALCULATORS</h2>
+        <div class="section-note">SELECT A TOOL ›› ✦</div>
+      </div>
+
+      <div class="tool-grid">
+
+        <article class="tool-card">
+          <div class="tool-card-top">
+            <div class="tool-icon">🔮</div>
+            <h3 class="tool-name">ECHOES<br>CALCULATOR</h3>
+          </div>
+          <p class="tool-desc">คำนวณจำนวน Echoes<br>ที่ต้องใช้</p>
+          <button class="tool-open" onclick="show('echoes')">
+            เริ่มคำนวณ <span>›</span>
+          </button>
+        </article>
+
+        <article class="tool-card">
+          <div class="tool-card-top">
+            <div class="tool-icon">🎟️</div>
+            <h3 class="tool-name">TOP-UP<br>CALCULATOR</h3>
+          </div>
+          <p class="tool-desc">คำนวณยอดเติมสะสม<br>และแพ็กที่คุ้มที่สุด</p>
+          <button class="tool-open" onclick="show('points')">
+            เริ่มคำนวณ <span>›</span>
+          </button>
+        </article>
+
+        <article class="tool-card">
+          <div class="tool-card-top">
+            <div class="tool-icon">🔮</div>
+            <h3 class="tool-name">ORB<br>CALCULATOR</h3>
+          </div>
+          <p class="tool-desc">คำนวณจำนวนลูกแก้ว<br>จากจำนวน Echoes</p>
+          <button class="tool-open" onclick="show('orb')">
+            เริ่มคำนวณ <span>›</span>
+          </button>
+        </article>
+
+      </div>
+
+      <section class="tools-section">
+        <div class="section-head">
+          <h2 class="section-title">TOOLS</h2>
+          <div class="section-note">MORE IKK TOOLS ›› ✦</div>
         </div>
 
-        <h2 class="side-title">IKK TOOLKIT</h2>
+        <div class="shortcut-grid">
+          <button class="shortcut" onclick="show('claim')">
+            <span class="sicon">⭐</span>
+            <strong>สะสมแต้ม</strong>
+            <span>›</span>
+          </button>
 
-        <div class="group">CALCULATE</div>
+          <button class="shortcut" onclick="show('info')">
+            <span class="sicon">📖</span>
+            <strong>ไกด์และข้อมูล</strong>
+            <span>›</span>
+          </button>
 
-        <div class="nav">
-            <button class="active" onclick="show('echoes',this)">📫 คำนวณจำนวน Echoes</button>
-            <button onclick="show('points',this)">🧮 คำนวณยอดเติมสะสม</button>
-            <button onclick="show('orb',this)">🔮 คำนวณลูกแก้ว</button>
+          <button class="shortcut" onclick="show('info')">
+            <span class="sicon">⚙️</span>
+            <strong>ตั้งค่า / อื่น ๆ</strong>
+            <span>›</span>
+          </button>
         </div>
+      </section>
+    </section>
+  </main>
 
-        <div class="group">TOOLS</div>
-
-        <div class="nav">
-            <button onclick="show('claim',this)">🎟️ สะสมแต้ม</button>
-        </div>
-
-    </aside>
-
-    <main class="content" id="content"></main>
+  <footer class="footer" id="footer">
+    <div class="footer-brand">IKK TERM GAME</div>
+    <div class="footer-links">
+      <a href="https://www.facebook.com/ikktermgame" target="_blank" rel="noopener">🔵 facebook.com/ikktermgame</a>
+      <a href="https://line.me/" target="_blank" rel="noopener">🟢 @ikktermgame</a>
+    </div>
+    <div class="footer-tag">PLAY<br>CALCULATE<br>ENJOY! ✦</div>
+  </footer>
 
 </div>
+
 <script>
 const packs=[{e:66,p:60,c:30},{e:203,p:185,c:90},{e:335,p:305,c:145}];
 function p759(n){return n>=30?283:n>=20?285:n>=10?287:290}
@@ -135,6 +976,7 @@ function calc(target,mode='e'){
  }
  return best;
 }
+
 function result(b,target,label='Echoes'){
  return `<div class="result"><div class="title">CHEAPEST COMBINATION</div>
  ${b.d?`<div class="line"><b>759 Echoes × ${b.d}</b></div>`:''}
@@ -148,199 +990,281 @@ function result(b,target,label='Echoes'){
 
 const WEB_APP_URL='https://script.google.com/macros/s/AKfycbw3xipY2M3nkBGmAp2J-gt5wrc6f2wt_242F3vRHeaDUlX3B3yJGcIMIgpQXvGQn3rQ/exec';
 
-function initClaim(){
-  const claimForm=document.getElementById('claimForm');
-  if(!claimForm)return;
+function scrollToSection(id){
+ const el=document.getElementById(id);
+ if(el)el.scrollIntoView({behavior:'smooth'});
+}
 
-  const claimCodeInput=document.getElementById('claimCode');
-  const codeFormatError=document.getElementById('codeFormatError');
-  const claimBtn=document.getElementById('claimBtn');
-  const claimBtnLabel=document.getElementById('claimBtnLabel');
-  const claimBtnSpinner=document.getElementById('claimBtnSpinner');
-  const claimError=document.getElementById('claimError');
-  const claimResult=document.getElementById('claimResult');
-  const claimUserId=document.getElementById('claimUserId');
+function setTopActive(btn){
+ document.querySelectorAll('.topbar button').forEach(x=>x.classList.remove('active'));
+ if(btn)btn.classList.add('active');
+}
 
-  const urlParams=new URLSearchParams(window.location.search);
-  const codeFromUrl=urlParams.get('code');
-  if(codeFromUrl)claimCodeInput.value=codeFromUrl.toUpperCase();
+function home(btn){
+ setTopActive(btn);
+ document.getElementById('content').innerHTML=`
+ <section id="homePage">
+   <div class="section-head">
+     <h2 class="section-title">CALCULATORS</h2>
+     <div class="section-note">SELECT A TOOL ›› ✦</div>
+   </div>
+   <div class="tool-grid">
+     <article class="tool-card">
+       <div class="tool-card-top"><div class="tool-icon">🔮</div><h3 class="tool-name">ECHOES<br>CALCULATOR</h3></div>
+       <p class="tool-desc">คำนวณจำนวน Echoes<br>ที่ต้องใช้</p>
+       <button class="tool-open" onclick="show('echoes')">เริ่มคำนวณ <span>›</span></button>
+     </article>
+     <article class="tool-card">
+       <div class="tool-card-top"><div class="tool-icon">🎟️</div><h3 class="tool-name">TOP-UP<br>CALCULATOR</h3></div>
+       <p class="tool-desc">คำนวณยอดเติมสะสม<br>และแพ็กที่คุ้มที่สุด</p>
+       <button class="tool-open" onclick="show('points')">เริ่มคำนวณ <span>›</span></button>
+     </article>
+     <article class="tool-card">
+       <div class="tool-card-top"><div class="tool-icon">🔮</div><h3 class="tool-name">ORB<br>CALCULATOR</h3></div>
+       <p class="tool-desc">คำนวณจำนวนลูกแก้ว<br>จากจำนวน Echoes</p>
+       <button class="tool-open" onclick="show('orb')">เริ่มคำนวณ <span>›</span></button>
+     </article>
+   </div>
+   <section class="tools-section">
+     <div class="section-head">
+       <h2 class="section-title">TOOLS</h2>
+       <div class="section-note">MORE IKK TOOLS ›› ✦</div>
+     </div>
+     <div class="shortcut-grid">
+       <button class="shortcut" onclick="show('claim')"><span class="sicon">⭐</span><strong>สะสมแต้ม</strong><span>›</span></button>
+       <button class="shortcut" onclick="show('info')"><span class="sicon">📖</span><strong>ไกด์และข้อมูล</strong><span>›</span></button>
+       <button class="shortcut" onclick="show('info')"><span class="sicon">⚙️</span><strong>ตั้งค่า / อื่น ๆ</strong><span>›</span></button>
+     </div>
+   </section>
+ </section>`;
+ window.scrollTo({top:0,behavior:'smooth'});
+}
 
-  function isValidCodeFormat(code){
-    return /^IKK-/.test(code);
-  }
-
-  function checkCodeFormat(){
-    const value=claimCodeInput.value.trim().toUpperCase();
-    const valid=value===''||isValidCodeFormat(value);
-    codeFormatError.style.display=valid?'none':'block';
-    return valid;
-  }
-
-  claimCodeInput.addEventListener('input',()=>{
-    claimCodeInput.value=claimCodeInput.value.toUpperCase();
-    checkCodeFormat();
-  });
-
-  function setLoading(loading){
-    claimBtn.disabled=loading;
-    claimBtnLabel.textContent=loading?'กำลังรับสิทธิ์...':'กดรับสิทธิ์ / สะสมแต้ม';
-    claimBtnSpinner.style.display=loading?'inline-block':'none';
-  }
-
-  async function postAction(payload){
-    const res=await fetch(WEB_APP_URL,{
-      method:'POST',
-      headers:{'Content-Type':'text/plain;charset=utf-8'},
-      body:JSON.stringify(payload)
-    });
-    return res.json();
-  }
-
-  claimForm.addEventListener('submit',async(e)=>{
-    e.preventDefault();
-    claimError.style.display='none';
-
-    const codeId=claimCodeInput.value.trim().toUpperCase();
-    const userId=claimUserId.value.trim();
-
-    if(!codeId||!userId){
-      claimError.textContent='กรุณากรอกรหัสโค้ดและ UID เกมให้ถูกต้อง';
-      claimError.style.display='block';
-      return;
-    }
-
-    if(!checkCodeFormat())return;
-
-    setLoading(true);
-
-    try{
-      const data=await postAction({
-        action:'claim',
-        CodeID:codeId,
-        UserID:userId
-      });
-
-      if(data.status!=='success'){
-        claimError.textContent=data.message||'รับสิทธิ์ไม่สำเร็จ กรุณาตรวจสอบรหัสโค้ดอีกครั้ง';
-        claimError.style.display='block';
-        return;
-      }
-
-      document.getElementById('claimTotal').textContent=
-        Number(data.totalAmount).toLocaleString('th-TH');
-      document.getElementById('claimPoints').textContent=data.totalPoints;
-      document.getElementById('claimRemainder').textContent=
-        Number(data.remainder).toLocaleString('th-TH')+' บาท';
-
-      const needed=Number(data.amountNeededForNextPoint);
-      document.getElementById('claimUpsellText').innerHTML=
-        needed>0
-          ?`เติมอีก <strong style="color:#2E7FC1">${needed.toLocaleString('th-TH')} บาท</strong> รับสิทธิ์ลุ้นรางวัลเพิ่มอีก 1 สิทธิ์!`
-          :'พอดีรับสิทธิ์ครบแล้ว 🎉 เริ่มสะสมรอบใหม่ได้เลย';
-
-      claimResult.style.display='block';
-      claimForm.style.display='none';
-      claimResult.scrollIntoView({behavior:'smooth',block:'nearest'});
-    }catch(err){
-      claimError.textContent='เชื่อมต่อ Web App ไม่สำเร็จ กรุณาเช็คอินเทอร์เน็ตแล้วลองใหม่';
-      claimError.style.display='block';
-    }finally{
-      setLoading(false);
-    }
-  });
-
-  document.getElementById('backToStartBtn').addEventListener('click',()=>{
-    claimForm.reset();
-    claimForm.style.display='flex';
-    claimResult.style.display='none';
-    claimError.style.display='none';
-    codeFormatError.style.display='none';
-    window.history.replaceState({},document.title,window.location.pathname);
-    claimCodeInput.focus();
-  });
+function renderPage(title,sub,html){
+ document.getElementById('content').innerHTML=`
+ <div class="page-wrap">
+   <h2 class="page-title">${title}</h2>
+   <p class="page-sub">${sub}</p>
+   ${html}
+ </div>`;
+ window.scrollTo({top:0,behavior:'smooth'});
 }
 
 function show(page,btn){
- document.querySelectorAll('.nav button').forEach(x=>x.classList.remove('active')); if(btn)btn.classList.add('active');
- const c=document.getElementById('content'),t=document.getElementById('title');
- if(page==='echoes'){t.textContent='Echoes Calculator';c.innerHTML=`<div class="tool"><h2>🔮 คำนวณจำนวน Echoes</h2><p>หาชุดแพ็กที่คุ้มที่สุด</p><div class="card"><div class="label">ต้องการ Echoes เท่าไหร่?</div><div class="row"><input id="n" type="number" value="3288"><button class="primary" onclick="go()">คำนวณ</button></div><div id="r"></div></div></div>`;go()}
- if(page==='points'){t.textContent='Top-up Calculator';c.innerHTML=`<div class="tool"><h2>🪙 คำนวณยอดเติมสะสม</h2><p>คิดจากแต้มยอดเติมสะสมของแต่ละแพ็ก</p><div class="card"><div class="label">ต้องการแต้มสะสมเท่าไหร่?</div><div class="row"><input id="n" type="number" value="690"><button class="primary" onclick="gp()">คำนวณ</button></div><div id="r"></div></div></div>`;gp()}
- if(page==='orb'){t.textContent='Orb Calculator';c.innerHTML=`<div class="tool"><h2>🔮 คำนวณลูกแก้ว</h2><p>1 ลูกแก้ว = 96 Echoes</p><div class="card"><div class="label">ต้องการลูกแก้วกี่ลูก?</div><div class="row"><input id="n" type="number" value="10"><button class="primary" onclick="orb()">คำนวณ</button></div><div id="r"></div></div></div>`;orb()}
+ setTopActive(btn);
+
+ if(page==='echoes'){
+  renderPage('🔮 ECHOES CALCULATOR','หาชุดแพ็กที่คุ้มที่สุด',`
+   <div class="calc-card">
+    <label class="calc-label">ต้องการ Echoes เท่าไหร่?</label>
+    <div class="calc-row">
+     <input id="n" class="calc-input" type="number" value="3288" min="0">
+     <button class="calc-primary" onclick="go()">คำนวณ</button>
+    </div>
+    <div id="r"></div>
+   </div>`);
+  go();
+ }
+
+ if(page==='points'){
+  renderPage('🎟️ TOP-UP CALCULATOR','คิดจากแต้มยอดเติมสะสมของแต่ละแพ็ก',`
+   <div class="calc-card">
+    <label class="calc-label">ต้องการแต้มสะสมเท่าไหร่?</label>
+    <div class="calc-row">
+     <input id="n" class="calc-input" type="number" value="690" min="0">
+     <button class="calc-primary" onclick="gp()">คำนวณ</button>
+    </div>
+    <div id="r"></div>
+   </div>`);
+  gp();
+ }
+
+ if(page==='orb'){
+  renderPage('🔮 ORB CALCULATOR','1 ลูกแก้ว = 96 Echoes',`
+   <div class="calc-card">
+    <label class="calc-label">ต้องการลูกแก้วกี่ลูก?</label>
+    <div class="calc-row">
+     <input id="n" class="calc-input" type="number" value="10" min="0">
+     <button class="calc-primary" onclick="orb()">คำนวณ</button>
+    </div>
+    <div id="r"></div>
+   </div>`);
+  orb();
+ }
+
+ if(page==='info'){
+  renderPage('📖 IKK GUIDE','ข้อมูลและเครื่องมือต่าง ๆ จะอยู่ตรงนี้ในอนาคต',`
+   <div class="calc-card" style="text-align:center">
+     <div style="font-size:52px">✨</div>
+     <h3 style="margin:8px 0;color:#25224b">กำลังเตรียมข้อมูล</h3>
+     <p style="margin:0;color:#7c7180">ส่วนนี้เว้นไว้สำหรับไกด์ ตาราง และเครื่องมือใหม่ ๆ ของ IKK</p>
+   </div>`);
+ }
+
  if(page==='claim'){
-  t.textContent='สะสมแต้ม';
-  c.innerHTML=`
-    <div class="tool claim-wrap">
-      <h2>🎟️ สะสมแต้ม</h2>
-      <p>กรอกรหัสโค้ดและ UID เกมเพื่อรับแต้มสะสม</p>
+  renderPage('🎟️ สะสมแต้ม','กรอกรหัสโค้ดและ UID เกมเพื่อรับแต้มสะสม',`
+   <div class="claim-wrap">
+    <section class="claim-form-card">
+     <span class="claim-badge">รับแต้ม</span>
+     <form id="claimForm" class="claim-form">
+      <div class="claim-field">
+       <label for="claimCode">รหัสโค้ด</label>
+       <input id="claimCode" class="claim-input" type="text" required placeholder="เช่น IKK-A3K9P" autocomplete="off">
+       <p id="codeFormatError" class="claim-error" style="display:none">กรอกรหัสโค้ดผิดช่อง / รูปแบบไม่ถูกต้อง</p>
+      </div>
+      <div class="claim-field">
+       <label for="claimUserId">UID เกมของคุณ</label>
+       <input id="claimUserId" class="claim-input" type="text" required placeholder="กรอก UID เกมของคุณ" autocomplete="off">
+      </div>
+      <button id="claimBtn" class="claim-btn" type="submit">
+       <span id="claimBtnLabel">กดรับสิทธิ์ / สะสมแต้ม</span>
+       <span id="claimBtnSpinner" class="claim-spinner" style="display:none"></span>
+      </button>
+     </form>
+     <p id="claimError" class="claim-error" style="display:none"></p>
+    </section>
 
-      <section class="claim-form-card">
-        <span class="claim-badge">รับแต้ม</span>
-
-        <form id="claimForm" class="claim-form">
-          <div class="claim-field">
-            <label for="claimCode">รหัสโค้ด</label>
-            <input id="claimCode" class="claim-input" type="text" required
-                   placeholder="เช่น IKK-A3K9P" autocomplete="off">
-            <p id="codeFormatError" class="claim-error" style="display:none">
-              กรอกรหัสโค้ดผิดช่อง / รูปแบบไม่ถูกต้อง
-            </p>
-          </div>
-
-          <div class="claim-field">
-            <label for="claimUserId">UID เกมของคุณ</label>
-            <input id="claimUserId" class="claim-input" type="text" required
-                   placeholder="กรอก UID เกมของคุณ" autocomplete="off">
-          </div>
-
-          <button id="claimBtn" class="claim-btn" type="submit">
-            <span id="claimBtnLabel">กดรับสิทธิ์ / สะสมแต้ม</span>
-            <span id="claimBtnSpinner" class="claim-spinner" style="display:none"></span>
-          </button>
-        </form>
-
-        <p id="claimError" class="claim-error" style="display:none"></p>
-      </section>
-
-      <section id="claimResult" class="claim-result-card" style="display:none">
-        <div class="claim-success">
-          <div class="emoji">🎉</div>
-          <p>รับแต้มสำเร็จ!</p>
-        </div>
-
-        <div class="claim-stats">
-          <div class="claim-stat">
-            <strong id="claimTotal">0</strong>
-            <span>ยอดสะสมรวม (บาท)</span>
-          </div>
-          <div class="claim-stat blue">
-            <strong id="claimPoints">0</strong>
-            <span>สิทธิ์ลุ้นรางวัล</span>
-          </div>
-        </div>
-
-        <div class="claim-remainder">
-          <span>เศษยอดคงเหลือ</span>
-          <strong id="claimRemainder">0 บาท</strong>
-        </div>
-
-        <div class="claim-upsell">
-          <span>💡</span>
-          <p id="claimUpsellText" style="margin:0"></p>
-        </div>
-
-        <button id="backToStartBtn" class="claim-back" type="button">
-          ↺ กลับไปหน้าแรก / เติมโค้ดใบอื่น
-        </button>
-      </section>
-    </div>`;
-
+    <section id="claimResult" class="claim-result-card" style="display:none">
+     <div class="claim-success"><div class="emoji">🎉</div><p>รับแต้มสำเร็จ!</p></div>
+     <div class="claim-stats">
+      <div class="claim-stat"><strong id="claimTotal">0</strong><span>ยอดสะสมรวม (บาท)</span></div>
+      <div class="claim-stat blue"><strong id="claimPoints">0</strong><span>สิทธิ์ลุ้นรางวัล</span></div>
+     </div>
+     <div class="claim-remainder"><span>เศษยอดคงเหลือ</span><strong id="claimRemainder">0 บาท</strong></div>
+     <div class="claim-upsell"><span>💡</span><p id="claimUpsellText" style="margin:0"></p></div>
+     <button id="backToStartBtn" class="claim-back" type="button">↺ กลับไปหน้าแรก / เติมโค้ดใบอื่น</button>
+    </section>
+   </div>`);
   initClaim();
+ }
 }
+
+function go(){
+ let n=+document.getElementById('n').value;
+ if(n<0)n=0;
+ let b=calc(n,'e');
+ document.getElementById('r').innerHTML=result(b,n);
 }
-function go(){let n=+document.getElementById('n').value,b=calc(n,'e');document.getElementById('r').innerHTML=result(b,n)}
-function gp(){let n=+document.getElementById('n').value,b=calc(n,'p');document.getElementById('r').innerHTML=result(b,n,'แต้มสะสม')}
-function orb(){let n=+document.getElementById('n').value,b=calc(n*96,'e');document.getElementById('r').innerHTML=result(b,n*96,'Echoes')}
-show('echoes',document.querySelector('.nav button'));
+
+function gp(){
+ let n=+document.getElementById('n').value;
+ if(n<0)n=0;
+ let b=calc(n,'p');
+ document.getElementById('r').innerHTML=result(b,n,'แต้มสะสม');
+}
+
+function orb(){
+ let n=+document.getElementById('n').value;
+ if(n<0)n=0;
+ let b=calc(n*96,'e');
+ document.getElementById('r').innerHTML=result(b,n*96,'Echoes');
+}
+
+function initClaim(){
+ const claimForm=document.getElementById('claimForm');
+ if(!claimForm)return;
+
+ const claimCodeInput=document.getElementById('claimCode');
+ const codeFormatError=document.getElementById('codeFormatError');
+ const claimBtn=document.getElementById('claimBtn');
+ const claimBtnLabel=document.getElementById('claimBtnLabel');
+ const claimBtnSpinner=document.getElementById('claimBtnSpinner');
+ const claimError=document.getElementById('claimError');
+ const claimResult=document.getElementById('claimResult');
+ const claimUserId=document.getElementById('claimUserId');
+
+ const urlParams=new URLSearchParams(window.location.search);
+ const codeFromUrl=urlParams.get('code');
+ if(codeFromUrl)claimCodeInput.value=codeFromUrl.toUpperCase();
+
+ function isValidCodeFormat(code){return /^IKK-/.test(code)}
+
+ function checkCodeFormat(){
+   const value=claimCodeInput.value.trim().toUpperCase();
+   const valid=value===''||isValidCodeFormat(value);
+   codeFormatError.style.display=valid?'none':'block';
+   return valid;
+ }
+
+ claimCodeInput.addEventListener('input',()=>{
+   claimCodeInput.value=claimCodeInput.value.toUpperCase();
+   checkCodeFormat();
+ });
+
+ function setLoading(loading){
+   claimBtn.disabled=loading;
+   claimBtnLabel.textContent=loading?'กำลังรับสิทธิ์...':'กดรับสิทธิ์ / สะสมแต้ม';
+   claimBtnSpinner.style.display=loading?'inline-block':'none';
+ }
+
+ async function postAction(payload){
+   const res=await fetch(WEB_APP_URL,{
+     method:'POST',
+     headers:{'Content-Type':'text/plain;charset=utf-8'},
+     body:JSON.stringify(payload)
+   });
+   return res.json();
+ }
+
+ claimForm.addEventListener('submit',async(e)=>{
+   e.preventDefault();
+   claimError.style.display='none';
+
+   const codeId=claimCodeInput.value.trim().toUpperCase();
+   const userId=claimUserId.value.trim();
+
+   if(!codeId||!userId){
+     claimError.textContent='กรุณากรอกรหัสโค้ดและ UID เกมให้ถูกต้อง';
+     claimError.style.display='block';
+     return;
+   }
+
+   if(!checkCodeFormat())return;
+
+   setLoading(true);
+
+   try{
+     const data=await postAction({action:'claim',CodeID:codeId,UserID:userId});
+
+     if(data.status!=='success'){
+       claimError.textContent=data.message||'รับสิทธิ์ไม่สำเร็จ กรุณาตรวจสอบรหัสโค้ดอีกครั้ง';
+       claimError.style.display='block';
+       return;
+     }
+
+     document.getElementById('claimTotal').textContent=Number(data.totalAmount).toLocaleString('th-TH');
+     document.getElementById('claimPoints').textContent=data.totalPoints;
+     document.getElementById('claimRemainder').textContent=Number(data.remainder).toLocaleString('th-TH')+' บาท';
+
+     const needed=Number(data.amountNeededForNextPoint);
+     document.getElementById('claimUpsellText').innerHTML=
+       needed>0
+         ?`เติมอีก <strong style="color:#2E7FC1">${needed.toLocaleString('th-TH')} บาท</strong> รับสิทธิ์ลุ้นรางวัลเพิ่มอีก 1 สิทธิ์!`
+         :'พอดีรับสิทธิ์ครบแล้ว 🎉 เริ่มสะสมรอบใหม่ได้เลย';
+
+     claimResult.style.display='block';
+     claimForm.style.display='none';
+     claimResult.scrollIntoView({behavior:'smooth',block:'nearest'});
+   }catch(err){
+     claimError.textContent='เชื่อมต่อ Web App ไม่สำเร็จ กรุณาเช็คอินเทอร์เน็ตแล้วลองใหม่';
+     claimError.style.display='block';
+   }finally{
+     setLoading(false);
+   }
+ });
+
+ document.getElementById('backToStartBtn').addEventListener('click',()=>{
+   claimForm.reset();
+   claimForm.style.display='flex';
+   claimResult.style.display='none';
+   claimError.style.display='none';
+   codeFormatError.style.display='none';
+   window.history.replaceState({},document.title,window.location.pathname);
+   claimCodeInput.focus();
+ });
+}
+
+home(document.querySelector('.topbar button'));
 </script>
 </body>
 </html>
