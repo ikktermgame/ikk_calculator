@@ -39,7 +39,35 @@ button.primary{border:0;border-radius:13px;padding:0 22px;background:#7d89ff;col
 .result{margin-top:16px;border:1px solid #6978ff;background:#1b2034;border-radius:16px;overflow:hidden}
 .title{padding:13px;color:#9ca8ff;font-size:12px;letter-spacing:.08em}.line{padding:11px 15px;border-top:1px solid #30354a}
 .stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:10px}.stat{background:#10131b;border-radius:13px;padding:12px}.stat span{display:block;color:#8d93a9;font-size:12px}.stat strong{font-size:23px}.price strong{color:#9ca8ff}
-@media(max-width:850px){.app{padding:18px}.brand{margin-left:0}.brand h1{font-size:45px}.layout{grid-template-columns:1fr}.sidebar{min-height:0}.nav{grid-template-columns:1fr 1fr}}
+@media(max-width:850px){.app{padding:18px}.brand{margin-left:0}.brand h1{font-size:45px}.layout{grid-template-columns:1fr}.sidebar{min-height:0}.nav{grid-template-columns:1fr}.content{min-height:0}.claim-stats{grid-template-columns:1fr}}
+
+/* ===== Earn Point page ===== */
+.claim-wrap{max-width:760px;margin:0 auto}
+.claim-form-card,.claim-result-card{position:relative;background:#fff;border:2.5px solid #7EC8E3;border-radius:24px;padding:22px;box-shadow:0 6px 0 rgba(126,200,227,.25)}
+.claim-badge{position:absolute;top:-13px;right:-8px;background:#FFD98E;color:#475569;font-size:11px;font-weight:600;padding:5px 12px;border-radius:999px;transform:rotate(6deg)}
+.claim-form{display:flex;flex-direction:column;gap:16px}
+.claim-field label{display:block;font-size:14px;font-weight:500;color:#64748b;margin-bottom:6px}
+.claim-input{width:100%!important;background:#fff!important;color:#334155!important;border:2px solid #e2e8f0!important;border-radius:16px!important;padding:12px 16px!important;outline:none!important}
+.claim-input:focus{border-color:#7EC8E3!important;box-shadow:0 0 0 4px rgba(126,200,227,.20)}
+.claim-input::placeholder{color:#cbd5e1}
+.claim-btn{margin-top:4px;border:0;border-radius:16px;background:#FF8FC4;color:#fff;font-weight:600;padding:14px;box-shadow:0 4px 0 #e06aa0;cursor:pointer}
+.claim-btn:disabled{opacity:.7;cursor:not-allowed}
+.claim-error{margin-top:12px;color:#e11d48;background:#fff1f2;border-radius:12px;padding:9px 12px;font-size:14px}
+.claim-result-card{margin-top:18px}
+.claim-success{text-align:center;margin-bottom:16px}
+.claim-success .emoji{font-size:30px}
+.claim-success p{font-family:Mitr,sans-serif;font-size:18px;color:#2E7FC1;font-weight:600;margin:4px 0 0}
+.claim-stats{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-bottom:16px}
+.claim-stat{border-radius:16px;padding:12px;text-align:center;background:#F5FAFF}
+.claim-stat.blue{background:rgba(126,200,227,.15)}
+.claim-stat strong{display:block;font-family:Mitr,sans-serif;font-size:28px;color:#2E7FC1}
+.claim-stat span{font-size:12px;color:#64748b}
+.claim-remainder{display:flex;justify-content:space-between;align-items:center;font-size:14px;color:#64748b;border:1px dashed #e2e8f0;border-radius:16px;padding:10px 14px;margin-bottom:14px}
+.claim-upsell{background:rgba(255,217,142,.40);border:1px solid #FFD98E;border-radius:16px;padding:12px 14px;display:flex;gap:8px;align-items:flex-start;margin-bottom:14px;color:#334155;font-size:14px}
+.claim-back{width:100%;border:2px solid #7EC8E3;background:#fff;color:#2E7FC1;font-weight:600;border-radius:16px;padding:10px;cursor:pointer}
+.claim-spinner{display:inline-block;width:18px;height:18px;border:3px solid rgba(255,255,255,.4);border-top-color:#fff;border-radius:50%;animation:claimSpin .7s linear infinite;vertical-align:middle;margin-left:6px}
+@keyframes claimSpin{to{transform:rotate(360deg)}}
+
 </style>
 </head>
 <body>
@@ -95,13 +123,197 @@ function result(b,target,label='Echoes'){
  <div class="stat"><span>ได้รับ Echoes</span><strong>${b.echoes.toLocaleString()}</strong></div>
  <div class="stat price"><span>ราคา</span><strong>${b.price.toLocaleString()}฿</strong></div></div>`;
 }
+
+const WEB_APP_URL='https://script.google.com/macros/s/AKfycbw3xipY2M3nkBGmAp2J-gt5wrc6f2wt_242F3vRHeaDUlX3B3yJGcIMIgpQXvGQn3rQ/exec';
+
+function initClaim(){
+  const claimForm=document.getElementById('claimForm');
+  if(!claimForm)return;
+
+  const claimCodeInput=document.getElementById('claimCode');
+  const codeFormatError=document.getElementById('codeFormatError');
+  const claimBtn=document.getElementById('claimBtn');
+  const claimBtnLabel=document.getElementById('claimBtnLabel');
+  const claimBtnSpinner=document.getElementById('claimBtnSpinner');
+  const claimError=document.getElementById('claimError');
+  const claimResult=document.getElementById('claimResult');
+  const claimUserId=document.getElementById('claimUserId');
+
+  const urlParams=new URLSearchParams(window.location.search);
+  const codeFromUrl=urlParams.get('code');
+  if(codeFromUrl)claimCodeInput.value=codeFromUrl.toUpperCase();
+
+  function isValidCodeFormat(code){
+    return /^IKK-/.test(code);
+  }
+
+  function checkCodeFormat(){
+    const value=claimCodeInput.value.trim().toUpperCase();
+    const valid=value===''||isValidCodeFormat(value);
+    codeFormatError.style.display=valid?'none':'block';
+    return valid;
+  }
+
+  claimCodeInput.addEventListener('input',()=>{
+    claimCodeInput.value=claimCodeInput.value.toUpperCase();
+    checkCodeFormat();
+  });
+
+  function setLoading(loading){
+    claimBtn.disabled=loading;
+    claimBtnLabel.textContent=loading?'กำลังรับสิทธิ์...':'กดรับสิทธิ์ / สะสมแต้ม';
+    claimBtnSpinner.style.display=loading?'inline-block':'none';
+  }
+
+  async function postAction(payload){
+    const res=await fetch(WEB_APP_URL,{
+      method:'POST',
+      headers:{'Content-Type':'text/plain;charset=utf-8'},
+      body:JSON.stringify(payload)
+    });
+    return res.json();
+  }
+
+  claimForm.addEventListener('submit',async(e)=>{
+    e.preventDefault();
+    claimError.style.display='none';
+
+    const codeId=claimCodeInput.value.trim().toUpperCase();
+    const userId=claimUserId.value.trim();
+
+    if(!codeId||!userId){
+      claimError.textContent='กรุณากรอกรหัสโค้ดและ UID เกมให้ถูกต้อง';
+      claimError.style.display='block';
+      return;
+    }
+
+    if(!checkCodeFormat())return;
+
+    setLoading(true);
+
+    try{
+      const data=await postAction({
+        action:'claim',
+        CodeID:codeId,
+        UserID:userId
+      });
+
+      if(data.status!=='success'){
+        claimError.textContent=data.message||'รับสิทธิ์ไม่สำเร็จ กรุณาตรวจสอบรหัสโค้ดอีกครั้ง';
+        claimError.style.display='block';
+        return;
+      }
+
+      document.getElementById('claimTotal').textContent=
+        Number(data.totalAmount).toLocaleString('th-TH');
+      document.getElementById('claimPoints').textContent=data.totalPoints;
+      document.getElementById('claimRemainder').textContent=
+        Number(data.remainder).toLocaleString('th-TH')+' บาท';
+
+      const needed=Number(data.amountNeededForNextPoint);
+      document.getElementById('claimUpsellText').innerHTML=
+        needed>0
+          ?`เติมอีก <strong style="color:#2E7FC1">${needed.toLocaleString('th-TH')} บาท</strong> รับสิทธิ์ลุ้นรางวัลเพิ่มอีก 1 สิทธิ์!`
+          :'พอดีรับสิทธิ์ครบแล้ว 🎉 เริ่มสะสมรอบใหม่ได้เลย';
+
+      claimResult.style.display='block';
+      claimForm.style.display='none';
+      claimResult.scrollIntoView({behavior:'smooth',block:'nearest'});
+    }catch(err){
+      claimError.textContent='เชื่อมต่อ Web App ไม่สำเร็จ กรุณาเช็คอินเทอร์เน็ตแล้วลองใหม่';
+      claimError.style.display='block';
+    }finally{
+      setLoading(false);
+    }
+  });
+
+  document.getElementById('backToStartBtn').addEventListener('click',()=>{
+    claimForm.reset();
+    claimForm.style.display='flex';
+    claimResult.style.display='none';
+    claimError.style.display='none';
+    codeFormatError.style.display='none';
+    window.history.replaceState({},document.title,window.location.pathname);
+    claimCodeInput.focus();
+  });
+}
+
 function show(page,btn){
  document.querySelectorAll('.nav button').forEach(x=>x.classList.remove('active')); if(btn)btn.classList.add('active');
  const c=document.getElementById('content'),t=document.getElementById('title');
  if(page==='echoes'){t.textContent='Echoes Calculator';c.innerHTML=`<div class="tool"><h2>🔮 คำนวณจำนวน Echoes</h2><p>หาชุดแพ็กที่คุ้มที่สุด</p><div class="card"><div class="label">ต้องการ Echoes เท่าไหร่?</div><div class="row"><input id="n" type="number" value="3288"><button class="primary" onclick="go()">คำนวณ</button></div><div id="r"></div></div></div>`;go()}
  if(page==='points'){t.textContent='Top-up Calculator';c.innerHTML=`<div class="tool"><h2>🪙 คำนวณยอดเติมสะสม</h2><p>คิดจากแต้มยอดเติมสะสมของแต่ละแพ็ก</p><div class="card"><div class="label">ต้องการแต้มสะสมเท่าไหร่?</div><div class="row"><input id="n" type="number" value="690"><button class="primary" onclick="gp()">คำนวณ</button></div><div id="r"></div></div></div>`;gp()}
  if(page==='orb'){t.textContent='Orb Calculator';c.innerHTML=`<div class="tool"><h2>🔮 คำนวณลูกแก้ว</h2><p>1 ลูกแก้ว = 96 Echoes</p><div class="card"><div class="label">ต้องการลูกแก้วกี่ลูก?</div><div class="row"><input id="n" type="number" value="10"><button class="primary" onclick="orb()">คำนวณ</button></div><div id="r"></div></div></div>`;orb()}
- if(page==='claim'){t.textContent='สะสมแต้ม';c.innerHTML=`<div class="tool"><h2>🎟️ สะสมแต้ม</h2><p>พื้นที่สำหรับย้ายระบบสะสมแต้มเดิมเข้ามาอยู่ใน Toolkit</p><div class="card" style="min-height:430px;display:grid;place-items:center;text-align:center"><div><div style="font-size:60px">🎟️</div><h2>เอาหน้าสะสมแต้มของพี่คิวมาใส่ตรงนี้</h2><p>ระบบ Google Apps Script เดิมยังใช้ต่อได้</p></div></div></div>`}
+ if(page==='claim'){
+  t.textContent='สะสมแต้ม';
+  c.innerHTML=`
+    <div class="tool claim-wrap">
+      <h2>🎟️ สะสมแต้ม</h2>
+      <p>กรอกรหัสโค้ดและ UID เกมเพื่อรับแต้มสะสม</p>
+
+      <section class="claim-form-card">
+        <span class="claim-badge">รับแต้ม</span>
+
+        <form id="claimForm" class="claim-form">
+          <div class="claim-field">
+            <label for="claimCode">รหัสโค้ด</label>
+            <input id="claimCode" class="claim-input" type="text" required
+                   placeholder="เช่น IKK-A3K9P" autocomplete="off">
+            <p id="codeFormatError" class="claim-error" style="display:none">
+              กรอกรหัสโค้ดผิดช่อง / รูปแบบไม่ถูกต้อง
+            </p>
+          </div>
+
+          <div class="claim-field">
+            <label for="claimUserId">UID เกมของคุณ</label>
+            <input id="claimUserId" class="claim-input" type="text" required
+                   placeholder="กรอก UID เกมของคุณ" autocomplete="off">
+          </div>
+
+          <button id="claimBtn" class="claim-btn" type="submit">
+            <span id="claimBtnLabel">กดรับสิทธิ์ / สะสมแต้ม</span>
+            <span id="claimBtnSpinner" class="claim-spinner" style="display:none"></span>
+          </button>
+        </form>
+
+        <p id="claimError" class="claim-error" style="display:none"></p>
+      </section>
+
+      <section id="claimResult" class="claim-result-card" style="display:none">
+        <div class="claim-success">
+          <div class="emoji">🎉</div>
+          <p>รับแต้มสำเร็จ!</p>
+        </div>
+
+        <div class="claim-stats">
+          <div class="claim-stat">
+            <strong id="claimTotal">0</strong>
+            <span>ยอดสะสมรวม (บาท)</span>
+          </div>
+          <div class="claim-stat blue">
+            <strong id="claimPoints">0</strong>
+            <span>สิทธิ์ลุ้นรางวัล</span>
+          </div>
+        </div>
+
+        <div class="claim-remainder">
+          <span>เศษยอดคงเหลือ</span>
+          <strong id="claimRemainder">0 บาท</strong>
+        </div>
+
+        <div class="claim-upsell">
+          <span>💡</span>
+          <p id="claimUpsellText" style="margin:0"></p>
+        </div>
+
+        <button id="backToStartBtn" class="claim-back" type="button">
+          ↺ กลับไปหน้าแรก / เติมโค้ดใบอื่น
+        </button>
+      </section>
+    </div>`;
+
+  initClaim();
+}
 }
 function go(){let n=+document.getElementById('n').value,b=calc(n,'e');document.getElementById('r').innerHTML=result(b,n)}
 function gp(){let n=+document.getElementById('n').value,b=calc(n,'p');document.getElementById('r').innerHTML=result(b,n,'แต้มสะสม')}
