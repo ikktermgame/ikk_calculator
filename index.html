@@ -31,11 +31,10 @@ body{
   margin:0;
   color:var(--text);
   font-family:'Noto Sans Thai',sans-serif;
-  background-image:url('/ikk_calculator/ikk_bg.png');
-  background-size:cover;
-  background-position:center top;
-  background-repeat:no-repeat;
-  background-attachment:fixed;
+  background:
+    radial-gradient(circle at 12% 12%,rgba(255,255,255,.9) 0 48px,transparent 49px),
+    radial-gradient(circle at 88% 18%,rgba(255,255,255,.7) 0 72px,transparent 73px),
+    linear-gradient(135deg,#a8e8f4 0%,#d9f5fa 38%,#e4d3f8 72%,#e4e7fe 100%);
   min-height:100vh;
   overflow-x:hidden;
 }
