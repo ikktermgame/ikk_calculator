@@ -847,10 +847,10 @@ button{cursor:pointer}
 <div class="app">
 
   <nav class="topbar">
-    <button class="active" onclick="home(this)">🏠︎ HOME</button>
-    <button onclick="show('echoes',this)">⌕ CALCULATOR</button>
-    <button onclick="show('claim',this)">★ EARN POINTS</button>
-    <button onclick="scrollToSection('footer')">NOT HEHE~</button>
+    <button class="active" onclick="home(this)">⌂ HOME</button>
+    <button onclick="show('echoes',this)">▣ CALCULATOR</button>
+    <button onclick="show('claim',this)">★ TOOLS</button>
+    <button onclick="scrollToSection('footer')">▤ GUIDE</button>
   </nav>
 
   <header class="hero">
@@ -868,10 +868,10 @@ button{cursor:pointer}
     <div class="cloud c3"></div>
 
     <div class="hero-copy">
-      <div class="kicker">IKK TERMGAME</div>
+      <div class="kicker">IKK TERM GAME</div>
       <h1>IKK</h1>
       <h2>CALCULATOR</h2>
-      <p class="hero-sub">Toolkits ช่วยคำนวนกระดุมแดงสำหรับคุณลูกค้าที่น่ารัก</p>
+      <p class="hero-sub">เครื่องมือช่วยคำนวณสำหรับเหล่า IKK</p>
     </div>
 
     <div class="hero-character">
@@ -953,10 +953,10 @@ button{cursor:pointer}
   </main>
 
   <footer class="footer" id="footer">
-    <div class="footer-brand">IKK TERMGAME</div>
+    <div class="footer-brand">IKK TERM GAME</div>
     <div class="footer-links">
       <a href="https://www.facebook.com/ikktermgame" target="_blank" rel="noopener">🔵 facebook.com/ikktermgame</a>
-      <a href="https://lin.ee/WodihAv" target="_blank" rel="noopener">🟢 @ikktermgame</a>
+      <a href="https://line.me/" target="_blank" rel="noopener">🟢 @ikktermgame</a>
     </div>
     <div class="footer-tag">PLAY<br>CALCULATE<br>ENJOY! ✦</div>
   </footer>
@@ -966,15 +966,74 @@ button{cursor:pointer}
 <script>
 const packs=[{e:66,p:60,c:30},{e:203,p:185,c:90},{e:335,p:305,c:145}];
 function p759(n){return n>=30?283:n>=20?285:n>=10?287:290}
+
+/* Fast calculator: Dynamic Programming แทน nested loops 4 ชั้น */
 function calc(target,mode='e'){
- let best=null;
- for(let a=0;a<=Math.ceil(target/66)+2;a++)for(let b=0;b<=Math.ceil(target/203)+2;b++)for(let c=0;c<=Math.ceil(target/335)+2;c++)for(let d=0;d<=Math.ceil(target/759)+2;d++){
-  const v=a*(mode==='e'?66:60)+b*(mode==='e'?203:185)+c*(mode==='e'?335:305)+d*(mode==='e'?759:690);
-  if(v<target)continue;
-  const price=a*30+b*90+c*145+d*p759(d), echoes=a*66+b*203+c*335+d*759;
-  if(!best||price<best.price||price===best.price&&echoes>best.echoes)best={a,b,c,d,price,echoes,v};
+ target=Math.max(0,Math.floor(Number(target)||0));
+
+ const packs=mode==='e'
+   ?[{v:66,e:66,c:30,key:'a'},{v:203,e:203,c:90,key:'b'},{v:335,e:335,c:145,key:'c'}]
+   :[{v:60,e:66,c:30,key:'a'},{v:185,e:203,c:90,key:'b'},{v:305,e:335,c:145,key:'c'}];
+
+ const dValue=mode==='e'?759:690;
+ const dEchoes=759;
+ const maxSmall=Math.max(...packs.map(x=>x.v));
+ const limit=target+maxSmall-1;
+
+ // dp[amount] = วิธีที่ถูกที่สุดสำหรับยอด amount แบบพอดี
+ const dp=Array(limit+1).fill(null);
+ dp[0]={cost:0,echoes:0,a:0,b:0,c:0};
+
+ for(let amount=1;amount<=limit;amount++){
+   let best=null;
+
+   for(const pack of packs){
+     const prev=amount-pack.v;
+     if(prev<0||!dp[prev])continue;
+
+     const candidate={
+       cost:dp[prev].cost+pack.c,
+       echoes:dp[prev].echoes+pack.e,
+       a:dp[prev].a,
+       b:dp[prev].b,
+       c:dp[prev].c
+     };
+     candidate[pack.key]++;
+
+     if(!best||candidate.cost<best.cost||
+       (candidate.cost===best.cost&&candidate.echoes>best.echoes)){
+       best=candidate;
+     }
+   }
+   dp[amount]=best;
  }
- return best;
+
+ let best=null;
+ const maxD=Math.ceil(target/dValue);
+
+ for(let d=0;d<=maxD;d++){
+   const remaining=Math.max(0,target-d*dValue);
+   const end=Math.min(limit,remaining+maxSmall-1);
+
+   for(let amount=remaining;amount<=end;amount++){
+     const small=dp[amount];
+     if(!small)continue;
+
+     const candidate={
+       a:small.a,b:small.b,c:small.c,d,
+       price:small.cost+d*p759(d),
+       echoes:small.echoes+d*dEchoes,
+       v:amount+d*dValue
+     };
+
+     if(!best||candidate.price<best.price||
+       (candidate.price===best.price&&candidate.echoes>best.echoes)){
+       best=candidate;
+     }
+   }
+ }
+
+ return best||{a:0,b:0,c:0,d:0,price:0,echoes:0,v:0};
 }
 
 function result(b,target,label='Echoes'){
@@ -1056,9 +1115,9 @@ function show(page,btn){
  if(page==='echoes'){
   renderPage('🔮 ECHOES CALCULATOR','หาชุดแพ็กที่คุ้มที่สุด',`
    <div class="calc-card">
-    <label class="calc-label">จำนวน Echoes ที่ต้องการ?</label>
+    <label class="calc-label">ต้องการ Echoes เท่าไหร่?</label>
     <div class="calc-row">
-     <input id="n" class="calc-input" type="number" value="0" min="0">
+     <input id="n" class="calc-input" type="number" value="3288" min="0">
      <button class="calc-primary" onclick="go()">คำนวณ</button>
     </div>
     <div id="r"></div>
@@ -1067,11 +1126,11 @@ function show(page,btn){
  }
 
  if(page==='points'){
-  renderPage('🎟️ RECHARGE GIFT CALCULATOR','คิดตามยอดรางวัลเติมเงินสะสม',`
+  renderPage('🎟️ TOP-UP CALCULATOR','คิดจากแต้มยอดเติมสะสมของแต่ละแพ็ก',`
    <div class="calc-card">
     <label class="calc-label">ต้องการแต้มสะสมเท่าไหร่?</label>
     <div class="calc-row">
-     <input id="n" class="calc-input" type="number" value="0" min="0">
+     <input id="n" class="calc-input" type="number" value="690" min="0">
      <button class="calc-primary" onclick="gp()">คำนวณ</button>
     </div>
     <div id="r"></div>
@@ -1084,7 +1143,7 @@ function show(page,btn){
    <div class="calc-card">
     <label class="calc-label">ต้องการลูกแก้วกี่ลูก?</label>
     <div class="calc-row">
-     <input id="n" class="calc-input" type="number" value="0" min="0">
+     <input id="n" class="calc-input" type="number" value="10" min="0">
      <button class="calc-primary" onclick="orb()">คำนวณ</button>
     </div>
     <div id="r"></div>
@@ -1102,7 +1161,7 @@ function show(page,btn){
  }
 
  if(page==='claim'){
-  renderPage('⭐🔑👤 MEMBERSHIP','กรอกรหัสโค้ดและ UID เกมเพื่อรับแต้มสะสม',`
+  renderPage('🎟️ สะสมแต้ม','กรอกรหัสโค้ดและ UID เกมเพื่อรับแต้มสะสม',`
    <div class="claim-wrap">
     <section class="claim-form-card">
      <span class="claim-badge">รับแต้ม</span>
