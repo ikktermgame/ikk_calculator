@@ -123,12 +123,23 @@ button{cursor:pointer}
   width:900px;
   max-width:none;
   left:50%;
-  top:70px;
+  top:0px;
   transform:translateX(-50%);
   z-index:1;
   pointer-events:none;
   opacity:.8;
   filter:drop-shadow(0 8px 12px rgba(120,150,220,.12));
+}
+  .cloud-overall{
+  position:absolute;
+  width:1200px;
+  max-width:none;
+  left:50%;
+  top:0px;
+  transform:translateX(-50%);
+  z-index:2;
+  pointer-events:none;
+  opacity:.45;
 }
 
 .logo{
@@ -901,8 +912,10 @@ button{cursor:pointer}
     <div class="cloud c3"></div>
     
 <img class="cloud-center" src="./cloud_center.png" alt="">
+<img class="cloud-overall" src="./cloud_over_all.png" alt="">
     
     <div class="hero-copy">
+      
       <div class="kicker">IKK TERMGAME</div>
       <h1>IKK</h1>
       <h2>CALCULATOR</h2>
