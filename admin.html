@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>IKK รับเติมเกม — Admin</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Mitr:wght@400;500;600;700&family=Noto+Sans+Thai:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --sky:#7EC8E3;
+    --lavender:#C9C2E8;
+    --bubblegum:#FF8FC4;
+    --deepblue:#2E7FC1;
+    --cream:#F5FAFF;
+    --peach:#FFD98E;
+  }
+  body{
+    font-family:'Noto Sans Thai', sans-serif;
+    background-color:var(--cream);
+    background-image:
+      radial-gradient(circle at 12% 8%, rgba(126,200,227,0.35) 0, transparent 45%),
+      radial-gradient(circle at 88% 4%, rgba(201,194,232,0.4) 0, transparent 40%),
+      radial-gradient(circle at 90% 92%, rgba(255,217,142,0.25) 0, transparent 40%);
+  }
+  .font-display{ font-family:'Mitr', sans-serif; }
+  @keyframes pop-in {
+    0% { opacity:0; transform: scale(0.92) translateY(8px); }
+    60% { opacity:1; transform: scale(1.02) translateY(-2px); }
+    100% { opacity:1; transform: scale(1) translateY(0); }
+  }
+  .animate-pop { animation: pop-in 0.45s cubic-bezier(.2,.8,.3,1.1) both; }
+  @keyframes shake {
+    10%, 90% { transform: translateX(-1px); }
+    20%, 80% { transform: translateX(2px); }
+    30%, 50%, 70% { transform: translateX(-4px); }
+    40%, 60% { transform: translateX(4px); }
+  }
+  .animate-shake { animation: shake 0.5s; }
+  .spinner {
+    border: 3px solid rgba(255,255,255,0.4);
+    border-top-color: white;
+    border-radius: 50%;
+    width: 18px; height: 18px;
+    animation: spin 0.7s linear infinite;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .brand-border{ border: 2.5px solid var(--sky); }
+</style>
+</head>
+<body class="min-h-screen flex justify-center px-4 py-8">
+
+  <!-- PIN GATE MODAL — ตอนนี้เช็ค PIN ที่ฝั่ง Backend ผ่าน action: 'verify_admin' -->
+  <div id="lockOverlay" class="fixed inset-0 bg-slate-900/40 flex items-center justify-center z-50 px-4">
+    <div class="relative bg-white rounded-3xl brand-border p-6 w-full max-w-xs text-center animate-pop">
+      <div class="absolute -top-3 -right-2 bg-[var(--peach)] text-[11px] font-semibold text-slate-700 px-3 py-1 rounded-full rotate-6 shadow-sm">Admin</div>
+      <div class="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-[var(--cream)] mb-3">
+        <span class="text-2xl">🔒</span>
+      </div>
+      <h2 class="font-display text-lg font-semibold text-[var(--deepblue)] mb-1">ใส่รหัสผ่านแอดมิน</h2>
+      <p class="text-xs text-slate-400 mb-4">สำหรับพนักงานร้านเท่านั้น</p>
+      <form id="pinForm" class="flex flex-col gap-3">
+        <input
+          id="pinInput" type="password" inputmode="numeric" required autofocus
+          placeholder="••••"
+          class="w-full text-center tracking-[0.4em] text-lg rounded-2xl border-2 border-slate-200 focus:border-[var(--sky)] focus:ring-4 focus:ring-[var(--sky)]/20 outline-none px-4 py-3 text-slate-700 placeholder:text-slate-300 placeholder:tracking-normal transition"
+        />
+        <button type="submit"
+          class="rounded-2xl bg-[var(--bubblegum)] hover:bg-[#ff7ab8] active:scale-[0.98] text-white font-medium py-3 shadow-[0_4px_0_0_#e06aa0] active:shadow-none active:translate-y-1 transition-all">
+          ปลดล็อก
+        </button>
+      </form>
+      <p id="pinError" class="hidden mt-3 text-sm text-rose-500 bg-rose-50 rounded-xl px-3 py-2">รหัสผ่านไม่ถูกต้อง ลองอีกครั้งนะ</p>
+    </div>
+  </div>
+
+  <div id="pageContent" class="w-full max-w-md" style="visibility:hidden;">
+
+    <header class="relative text-center mb-6 pt-2">
+      <div class="absolute -top-3 left-2 w-14 h-14 rounded-full bg-[var(--lavender)]/50 blur-xl"></div>
+      <div class="absolute -top-1 right-4 w-10 h-10 rounded-full bg-[var(--peach)]/50 blur-lg"></div>
+      <div class="relative inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-white brand-border shadow-sm mb-3">
+        <span class="text-2xl">🎮</span>
+      </div>
+      <h1 class="font-display text-2xl font-semibold text-[var(--deepblue)]">IKK รับเติมเกม</h1>
+      <p class="text-sm text-slate-500 mt-1">สร้างโค้ดรับแต้ม · สำหรับแอดมิน</p>
+    </header>
+
+    <!-- Generate form -->
+    <section class="relative bg-white rounded-3xl brand-border p-5 shadow-[0_6px_0_0_rgba(126,200,227,0.25)]">
+      <span class="absolute -top-3 -right-2 bg-[var(--peach)] text-[11px] font-semibold text-slate-700 px-3 py-1 rounded-full rotate-6 shadow-sm">Admin</span>
+
+      <form id="generateForm" class="flex flex-col gap-4">
+        <div>
+          <label for="genAmount" class="block text-sm font-medium text-slate-600 mb-1.5">ยอดเติมเงิน (บาท)</label>
+          <input
+            id="genAmount" type="number" min="1" step="1" required
+            placeholder="เช่น 150"
+            class="w-full rounded-2xl border-2 border-slate-200 focus:border-[var(--sky)] focus:ring-4 focus:ring-[var(--sky)]/20 outline-none px-4 py-3 text-slate-700 placeholder:text-slate-300 transition"
+          />
+        </div>
+
+        <button id="genBtn" type="submit"
+          class="mt-1 flex items-center justify-center gap-2 rounded-2xl bg-[var(--bubblegum)] hover:bg-[#ff7ab8] active:scale-[0.98] text-white font-medium py-3.5 shadow-[0_4px_0_0_#e06aa0] active:shadow-none active:translate-y-1 transition-all">
+          <span id="genBtnLabel">สร้างโค้ดรับแต้ม</span>
+          <span id="genBtnSpinner" class="spinner hidden"></span>
+        </button>
+      </form>
+      <p id="genError" class="hidden mt-3 text-sm text-rose-500 bg-rose-50 rounded-xl px-3 py-2"></p>
+    </section>
+
+    <!-- Result section -->
+    <section id="genResult" class="hidden mt-5 bg-white rounded-3xl brand-border p-5 animate-pop text-center">
+      <p class="text-sm text-slate-500 mb-1">โค้ดที่สร้างสำเร็จ</p>
+      <p id="genCodeId" class="font-display text-2xl font-semibold text-[var(--deepblue)] tracking-wide mb-1">IKK-XXXXXXXX</p>
+      <p class="text-xs text-slate-400 mb-4">มูลค่า <span id="genAmountLabel">0</span> บาท</p>
+
+      <div class="flex flex-col gap-2">
+        <button id="copyCodeBtn" class="rounded-2xl border-2 border-[var(--sky)] text-[var(--deepblue)] font-medium py-2.5 hover:bg-[var(--sky)]/10 transition">
+          📋 คัดลอกรหัสโค้ด
+        </button>
+      </div>
+      <p id="copyToast" class="hidden text-xs text-[var(--deepblue)] mt-2 font-medium">คัดลอกแล้ว!</p>
+    </section>
+
+  </div>
+
+<script>
+  const WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbw3xipY2M3nkBGmAp2J-gt5wrc6f2wt_242F3vRHeaDUlX3B3yJGcIMIgpQXvGQn3rQ/exec';
+
+  async function postAction(payload){
+    const res = await fetch(WEB_APP_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+      body: JSON.stringify(payload)
+    });
+    return res.json();
+  }
+
+  // ---------- PIN gate (เช็คที่ฝั่ง Backend ผ่าน action: 'verify_admin') ----------
+  const lockOverlay = document.getElementById('lockOverlay');
+  const pageContent = document.getElementById('pageContent');
+  const pinForm = document.getElementById('pinForm');
+  const pinInput = document.getElementById('pinInput');
+  const pinError = document.getElementById('pinError');
+
+  pinForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    pinError.classList.add('hidden');
+
+    const enteredPin = pinInput.value.trim();
+    if (!enteredPin) return;
+
+    const submitBtn = pinForm.querySelector('button');
+    submitBtn.disabled = true;
+    submitBtn.textContent = 'กำลังตรวจสอบ...';
+
+    try {
+      const data = await postAction({ action: 'verify_admin', pin: enteredPin });
+
+      if (data.status === 'success') {
+        lockOverlay.remove();
+        pageContent.style.visibility = 'visible';
+      } else {
+        pinError.textContent = 'รหัสผ่านไม่ถูกต้อง ลองอีกครั้งนะ';
+        pinError.classList.remove('hidden');
+        pinInput.value = '';
+        pinInput.focus();
+
+        const modal = lockOverlay.querySelector('div');
+        modal.classList.remove('animate-shake');
+        void modal.offsetWidth;
+        modal.classList.add('animate-shake');
+      }
+    } catch (err) {
+      pinError.textContent = 'เกิดข้อผิดพลาดในการเชื่อมต่อ';
+      pinError.classList.remove('hidden');
+    } finally {
+      submitBtn.disabled = false;
+      submitBtn.textContent = 'ปลดล็อก';
+    }
+  });
+
+  function setBtnLoading(btn, labelEl, spinnerEl, isLoading, loadingText, defaultText){
+    btn.disabled = isLoading;
+    btn.classList.toggle('opacity-70', isLoading);
+    spinnerEl.classList.toggle('hidden', !isLoading);
+    labelEl.textContent = isLoading ? loadingText : defaultText;
+  }
+
+  // ---------- Generate code ----------
+  const generateForm = document.getElementById('generateForm');
+  const genBtn = document.getElementById('genBtn');
+  const genBtnLabel = document.getElementById('genBtnLabel');
+  const genBtnSpinner = document.getElementById('genBtnSpinner');
+  const genError = document.getElementById('genError');
+  const genResult = document.getElementById('genResult');
+  let lastGeneratedCode = '';
+
+  generateForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    genError.classList.add('hidden');
+
+    const amount = Number(document.getElementById('genAmount').value);
+    if (!amount || amount <= 0) {
+      genError.textContent = 'กรุณากรอกยอดเติมเงินให้ถูกต้อง';
+      genError.classList.remove('hidden');
+      return;
+    }
+
+    setBtnLoading(genBtn, genBtnLabel, genBtnSpinner, true, 'กำลังสร้างโค้ด...', 'สร้างโค้ดรับแต้ม');
+
+    try {
+      const data = await postAction({ action: 'generate', Amount: amount });
+      if (data.status !== 'success') {
+        genError.textContent = data.message || 'สร้างโค้ดไม่สำเร็จ';
+        genError.classList.remove('hidden');
+        return;
+      }
+
+      lastGeneratedCode = data.codeId;
+      document.getElementById('genCodeId').textContent = data.codeId;
+      document.getElementById('genAmountLabel').textContent = Number(data.amount).toLocaleString('th-TH');
+
+      genResult.classList.remove('hidden');
+      genResult.classList.remove('animate-pop');
+      void genResult.offsetWidth;
+      genResult.classList.add('animate-pop');
+
+      generateForm.reset();
+    } catch (err) {
+      genError.textContent = 'เชื่อมต่อ Web App ไม่สำเร็จ';
+      genError.classList.remove('hidden');
+    } finally {
+      setBtnLoading(genBtn, genBtnLabel, genBtnSpinner, false, 'กำลังสร้างโค้ด...', 'สร้างโค้ดรับแต้ม');
+    }
+  });
+
+  function showCopyToast(){
+    const toast = document.getElementById('copyToast');
+    toast.classList.remove('hidden');
+    setTimeout(() => toast.classList.add('hidden'), 1800);
+  }
+
+  document.getElementById('copyCodeBtn').addEventListener('click', () => {
+    if (!lastGeneratedCode) return;
+    navigator.clipboard.writeText(lastGeneratedCode).then(showCopyToast);
+  });
+</script>
+</body>
+</html>
