@@ -39,7 +39,29 @@ button.primary{border:0;border-radius:13px;padding:0 22px;background:#7d89ff;col
 .result{margin-top:16px;border:1px solid #6978ff;background:#1b2034;border-radius:16px;overflow:hidden}
 .title{padding:13px;color:#9ca8ff;font-size:12px;letter-spacing:.08em}.line{padding:11px 15px;border-top:1px solid #30354a}
 .stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:10px}.stat{background:#10131b;border-radius:13px;padding:12px}.stat span{display:block;color:#8d93a9;font-size:12px}.stat strong{font-size:23px}.price strong{color:#9ca8ff}
-@media(max-width:850px){.app{padding:18px}.brand{margin-left:0}.brand h1{font-size:45px}.layout{grid-template-columns:1fr}.sidebar{min-height:0}.nav{grid-template-columns:1fr}.content{min-height:0}.claim-stats{grid-template-columns:1fr}}
+@media(max-width:850px){
+    .app{padding:18px}
+    .brand{margin-left:0}
+    .brand h1{font-size:45px}
+    .layout{grid-template-columns:1fr}
+    .sidebar{min-height:0}
+    .nav{grid-template-columns:1fr}
+    .content{min-height:0}
+    .claim-stats{grid-template-columns:1fr}
+
+    .character{
+        height:auto;
+        min-height:0;
+        overflow:visible;
+    }
+
+    .character img{
+        width:100%;
+        height:auto;
+        object-fit:contain;
+        display:block;
+    }
+}
 
 /* ===== Earn Point page ===== */
 .claim-wrap{max-width:760px;margin:0 auto}
