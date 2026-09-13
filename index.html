@@ -122,6 +122,16 @@ button{cursor:pointer}
   padding:38px 28px 8px;
   overflow:hidden;
 }
+  .cloud-bg{
+  position:absolute;
+  width:1100px;
+  max-width:none;
+  left:50%;
+  top:20px;
+  transform:translateX(-50%);
+  z-index:0;
+  pointer-events:none;
+}
   .cloud-center{
   position:absolute;
   width:900px;
@@ -1047,7 +1057,8 @@ button{cursor:pointer}
     <div class="cloud c1"></div>
     <div class="cloud c2"></div>
     <div class="cloud c3"></div>
-    
+
+<img class="cloud-bg" src="./cloud_bg.png" alt="">    
 <img class="cloud-center" src="./cloud_center.png" alt="">
     
     <div class="hero-copy">
