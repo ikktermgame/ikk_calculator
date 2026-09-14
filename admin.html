@@ -51,7 +51,8 @@
 </head>
 <body class="min-h-screen flex justify-center px-4 py-8">
 
-  <!-- PIN GATE MODAL — ตอนนี้เช็ค PIN ที่ฝั่ง Backend ผ่าน action: 'verify_admin' -->
+  <!-- PIN GATE MODAL — เช็คที่ Backend (verify_admin) แล้วเก็บ PIN ไว้ใน sessionStorage
+       เพื่อไม่ต้องกรอกซ้ำเวลาสลับไป admin_gacha.html (คนละไฟล์ แต่ origin เดียวกัน) -->
   <div id="lockOverlay" class="fixed inset-0 bg-slate-900/40 flex items-center justify-center z-50 px-4">
     <div class="relative bg-white rounded-3xl brand-border p-6 w-full max-w-xs text-center animate-pop">
       <div class="absolute -top-3 -right-2 bg-[var(--peach)] text-[11px] font-semibold text-slate-700 px-3 py-1 rounded-full rotate-6 shadow-sm">Admin</div>
@@ -85,6 +86,7 @@
       </div>
       <h1 class="font-display text-2xl font-semibold text-[var(--deepblue)]">IKK รับเติมเกม</h1>
       <p class="text-sm text-slate-500 mt-1">สร้างโค้ดรับแต้ม · สำหรับแอดมิน</p>
+      <a href="admin_gacha.html" class="inline-block mt-2 text-xs text-[var(--deepblue)] underline underline-offset-2">🎰 ไปหน้าจับรางวัลกาชาปอง</a>
     </header>
 
     <!-- Generate form -->
@@ -128,6 +130,7 @@
 
 <script>
   const WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbw3xipY2M3nkBGmAp2J-gt5wrc6f2wt_242F3vRHeaDUlX3B3yJGcIMIgpQXvGQn3rQ/exec';
+  const PIN_STORAGE_KEY = 'ikk_admin_pin'; // sessionStorage เดียวกันใช้ร่วมกับ admin_gacha.html
 
   async function postAction(payload){
     const res = await fetch(WEB_APP_URL, {
@@ -138,12 +141,41 @@
     return res.json();
   }
 
-  // ---------- PIN gate (เช็คที่ฝั่ง Backend ผ่าน action: 'verify_admin') ----------
+  // ยิง action ที่ต้องใช้สิทธิ์แอดมิน -> แนบ pin จาก sessionStorage ให้อัตโนมัติทุกครั้ง
+  async function postAdminAction(payload){
+    payload.pin = sessionStorage.getItem(PIN_STORAGE_KEY) || '';
+    return postAction(payload);
+  }
+
   const lockOverlay = document.getElementById('lockOverlay');
   const pageContent = document.getElementById('pageContent');
   const pinForm = document.getElementById('pinForm');
   const pinInput = document.getElementById('pinInput');
   const pinError = document.getElementById('pinError');
+
+  function unlockUI(){
+    lockOverlay.remove();
+    pageContent.style.visibility = 'visible';
+  }
+
+  async function tryUnlockWithStoredPin(){
+    const storedPin = sessionStorage.getItem(PIN_STORAGE_KEY);
+    if (!storedPin) return; // ไม่มี PIN เก่า -> ให้กรอกใหม่ตามปกติ
+
+    try {
+      const data = await postAction({ action: 'verify_admin', pin: storedPin });
+      if (data.status === 'success') {
+        unlockUI();
+      } else {
+        sessionStorage.removeItem(PIN_STORAGE_KEY); // PIN เก่าใช้ไม่ได้แล้ว (เช่นแอดมินเปลี่ยนรหัส)
+      }
+    } catch (err) {
+      // เชื่อมต่อไม่ได้ตอนเปิดหน้า - ปล่อยให้กรอก PIN เองตามปกติ ไม่ต้อง block ผู้ใช้
+    }
+  }
+
+  // เปิดหน้ามาแล้วเช็คก่อนว่ามี PIN ที่เคยปลดล็อกไว้ในเซสชันนี้หรือยัง (จากหน้ากาชาก็ได้)
+  tryUnlockWithStoredPin();
 
   pinForm.addEventListener('submit', async (e) => {
     e.preventDefault();
@@ -160,8 +192,8 @@
       const data = await postAction({ action: 'verify_admin', pin: enteredPin });
 
       if (data.status === 'success') {
-        lockOverlay.remove();
-        pageContent.style.visibility = 'visible';
+        sessionStorage.setItem(PIN_STORAGE_KEY, enteredPin); // จำไว้ใช้ตลอดเซสชัน ไม่ต้องกรอกซ้ำ
+        unlockUI();
       } else {
         pinError.textContent = 'รหัสผ่านไม่ถูกต้อง ลองอีกครั้งนะ';
         pinError.classList.remove('hidden');
@@ -212,10 +244,17 @@
     setBtnLoading(genBtn, genBtnLabel, genBtnSpinner, true, 'กำลังสร้างโค้ด...', 'สร้างโค้ดรับแต้ม');
 
     try {
-      const data = await postAction({ action: 'generate', Amount: amount });
+      // ไม่ต้องพิมพ์ pin เอง — postAdminAction แนบให้จาก sessionStorage แบบไร้รอยต่อ
+      const data = await postAdminAction({ action: 'generate', Amount: amount });
+
       if (data.status !== 'success') {
         genError.textContent = data.message || 'สร้างโค้ดไม่สำเร็จ';
         genError.classList.remove('hidden');
+        // ถ้า backend บอกว่า pin ไม่ถูกต้อง (เช่นแอดมินเปลี่ยนรหัสจากเครื่องอื่น) ให้เคลียร์เซสชันแล้วรีเฟรชให้กรอกใหม่
+        if (data.message && data.message.indexOf('รหัสแอดมิน') !== -1) {
+          sessionStorage.removeItem(PIN_STORAGE_KEY);
+          setTimeout(() => window.location.reload(), 1200);
+        }
         return;
       }
 
