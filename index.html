@@ -528,14 +528,26 @@ button{cursor:pointer}
 /* ===== Claim page — same IKK yellow/pink calculator theme ===== */
 .claim-wrap{max-width:850px;margin:0 auto}
 
-.claim-form-card,
-.claim-result-card{
+.claim-form-card{
   position:relative;
   background:#fffcf6;
   border:3px solid #ff9f24;
   border-radius:20px;
   padding:24px;
   box-shadow:0 7px 0 #ffc96a;
+}
+  
+.claim-result-card{
+  position:relative;
+  margin-top:18px;
+  background:#ffffff;
+  border:3px solid #ff8fc4;
+  border-radius:20px;
+  padding:24px;
+  box-shadow:0 7px 0 #f5b6d2;
+}
+  .claim-form-card.hidden{
+  display:none;
 }
 
 .claim-badge{
@@ -630,11 +642,15 @@ button{cursor:pointer}
   border-radius:16px;
   padding:12px;
   text-align:center;
-  background:rgba(255,255,255,.72);
-  border:2px solid rgba(255,255,255,.9);
+
+  background:#fff7fb;
+  border:2px solid #ffb6d8;
 }
 
-.claim-stat.blue{background:rgba(255,255,255,.72)}
+.claim-stat.blue{
+  background:#f0fbff;
+  border:2px solid #a9e3f3;
+}
 
 .claim-stat strong{
   display:block;
@@ -649,10 +665,13 @@ button{cursor:pointer}
   display:flex;
   justify-content:space-between;
   align-items:center;
+
   font-size:14px;
   color:#6f6259;
-  border:2px dashed rgba(255,255,255,.95);
-  background:rgba(255,255,255,.45);
+
+  border:2px dashed #ffd36e;
+  background:#fffaf0;
+
   border-radius:16px;
   padding:10px 14px;
   margin-bottom:14px;
@@ -1517,6 +1536,7 @@ function initClaim(){
 
      claimResult.style.display='block';
      claimForm.style.display='none';
+     document.querySelector('.claim-form-card').style.display='none';
      claimResult.scrollIntoView({behavior:'smooth',block:'nearest'});
    }catch(err){
      claimError.textContent='เชื่อมต่อ Web App ไม่สำเร็จ กรุณาเช็คอินเทอร์เน็ตแล้วลองใหม่';
@@ -1529,6 +1549,7 @@ function initClaim(){
  document.getElementById('backToStartBtn').addEventListener('click',()=>{
    claimForm.reset();
    claimForm.style.display='flex';
+   document.querySelector('.claim-form-card').style.display='';
    claimResult.style.display='none';
    claimError.style.display='none';
    codeFormatError.style.display='none';
