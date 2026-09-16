@@ -133,7 +133,7 @@
   // Remember-login: เก็บ "session token" (ไม่ใช่ PIN ดิบ) ไว้ 24 ชม. ใน localStorage
   const TOKEN_KEY = 'ikk_admin_token';
   const TOKEN_EXPIRY_KEY = 'ikk_admin_token_expiry';
-  const REQUEST_TIMEOUT_MS = 10000; // กันหน้าค้างไม่รู้จบ ถ้าเกิน 10 วิ ถือว่า timeout
+  const REQUEST_TIMEOUT_MS = 15000; // ขยับจาก 10 วิ -> 15 วิ กันโดน Apps Script cold start (3-5 วิ) ตัดจบก่อนเวลา
 
   // ---------- fetch ที่มี timeout จริง แยกเคส "เน็ตมีปัญหา" ออกจาก "คำตอบจาก backend" ----------
   async function postAction(payload){
@@ -145,7 +145,8 @@
         method: 'POST',
         headers: { 'Content-Type': 'text/plain;charset=utf-8' },
         body: JSON.stringify(payload),
-        signal: controller.signal
+        signal: controller.signal,
+        cache: 'no-store'
       });
       clearTimeout(timeoutId);
 
@@ -184,10 +185,23 @@
     localStorage.removeItem(TOKEN_EXPIRY_KEY);
   }
 
+  // ลองซ้ำอัตโนมัติ 1 ครั้งถ้าเจอ timeout/เน็ตมีปัญหา ก่อนจะฟ้อง error จริง
+  // (กันเคส Apps Script cold start ช้าครั้งแรกหลังไม่มีคนใช้งานนาน ซึ่งไม่ใช่ PIN ผิด)
+  async function postActionWithRetry(payload, retries = 1){
+    try {
+      return await postAction(payload);
+    } catch (err) {
+      if (retries > 0 && (err.message === 'TIMEOUT' || err.message === 'NETWORK_ERROR')) {
+        return await postActionWithRetry(payload, retries - 1);
+      }
+      throw err;
+    }
+  }
+
   async function postAdminAction(payload){
     const token = getStoredToken();
     if (token) payload.token = token;
-    return postAction(payload);
+    return postActionWithRetry(payload);
   }
 
   // ---------- PIN gate ----------
@@ -198,8 +212,11 @@
   const pinForm = document.getElementById('pinForm');
   const pinInput = document.getElementById('pinInput');
   const pinError = document.getElementById('pinError');
+  let isUnlocked = false; // กันเรียก unlockUI ซ้ำซ้อนหากมีหลาย flow ทำงานพร้อมกัน
 
   function unlockUI(){
+    if (isUnlocked) return;
+    isUnlocked = true;
     lockOverlay.remove();
     pageContent.style.visibility = 'visible';
   }
@@ -223,7 +240,7 @@
     pinForm.classList.add('hidden');
 
     try {
-      const data = await postAction({ action: 'verify_token', token });
+      const data = await postActionWithRetry({ action: 'verify_token', token });
       if (data.status === 'success') {
         unlockUI();
         return;
@@ -253,7 +270,7 @@
     submitBtn.textContent = 'กำลังตรวจสอบ...';
 
     try {
-      const data = await postAction({ action: 'verify_admin', pin: enteredPin });
+      const data = await postActionWithRetry({ action: 'verify_admin', pin: enteredPin });
 
       if (data.status === 'success') {
         storeToken(data.token, data.expiresAt); // จำไว้ 24 ชม. ไม่ต้องกรอกซ้ำแม้ปิดเบราว์เซอร์
